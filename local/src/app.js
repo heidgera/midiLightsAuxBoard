@@ -12,7 +12,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
       LEDs.show();
     }, 1000);
 
-    console.log(midi.in.getMIDIInDevices());
+    console.log(midi.in.devices;
 
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
