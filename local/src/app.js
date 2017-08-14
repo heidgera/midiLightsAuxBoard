@@ -1,6 +1,6 @@
 'use strict';
 
-obtain(['µ/midi.js', './src/LEDs.js'], (midi, LEDs)=> {
+obtain(['µ/midi.js', './src/LEDs.js'], (midi, LEDs)=> {//, './src/LEDs.js'
   exports.app = {};
 
   exports.app.start = ()=> {
@@ -13,8 +13,8 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, LEDs)=> {
     });
 
     setInterval(()=> {
-      LEDs.indicatorOn();
-      setTimeout(LEDs.indicatorOff, 500);
+      //LEDs.indicatorOn();
+      //setTimeout(LEDs.indicatorOff, 500);
     }, 1000);
 
     document.onkeypress = (e)=> {
