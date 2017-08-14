@@ -18,6 +18,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
       var newIn = null;
       midi.in.devices.forEach((el)=> {
         if (el.name.includes('Axiom') && !newIn) newIn = el;
+        console.log(el.name);
       });
       midi.in.selectMIDIIn(el);
     };
@@ -31,6 +32,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
         else if (c > 4) r = 0, g = 0, b = 1;
         else r = 1, g = 0, b = 0;
         LEDs.setColor(note, r * (vel - k) + b * k, g * (vel - k) + r * k, b * (vel - k) + g * k);
+
         //LEDs.setColor(note, vel, vel, vel);
         LEDs.show();
       }
