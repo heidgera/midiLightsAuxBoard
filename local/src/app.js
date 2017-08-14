@@ -44,11 +44,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
     setInterval(()=> {
       //LEDs.indicatorOn();
       //setTimeout(LEDs.indicatorOff, 500);
-      midiStates.forEach((item, ind)=> {
-        LEDs.setColor(ind, item, item, item);
-      });
-      LEDs.show();
-    }, 2000);
+    }, 500);
 
     document.onkeypress = (e)=> {
       if (e.key == ' ') console.log('Space pressed');
