@@ -13,8 +13,8 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, LEDs)=> {//, './src/LEDs.js'
     });
 
     setInterval(()=> {
-      //LEDs.indicatorOn();
-      //setTimeout(LEDs.indicatorOff, 500);
+      LEDs.indicatorOn();
+      setTimeout(LEDs.indicatorOff, 500);
     }, 1000);
 
     document.onkeypress = (e)=> {
