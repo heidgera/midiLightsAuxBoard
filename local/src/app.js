@@ -1,6 +1,6 @@
 'use strict';
 
-obtain(['µ/midi.js', './src/LEDs.js'], (midi, LEDs)=> {//, './src/LEDs.js'
+obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
   exports.app = {};
 
   exports.app.start = ()=> {
