@@ -26,6 +26,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
         console.log('Note ' + note + ' pressed at ' + vel);
+        var r = 1, g =0, b =0;
         var c = note % 12;
         var k = (note % 4) * vel / 4;
         if (c > 8) r = 0, g = 1, b = 0;
