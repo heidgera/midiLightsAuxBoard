@@ -45,8 +45,9 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
       //LEDs.indicatorOn();
       //setTimeout(LEDs.indicatorOff, 500);
       midiStates.forEach((item, ind)=> {
-        LEDs.setColor(ind, item,item,item);
+        LEDs.setColor(ind, item, item, item);
       });
+      LEDs.show();
     }, 2000);
 
     document.onkeypress = (e)=> {
