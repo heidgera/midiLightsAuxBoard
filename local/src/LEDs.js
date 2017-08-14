@@ -1,4 +1,4 @@
-obtain(['µ/serialElectron.js'], ({ Serial })=> {
+obtain(['µ/SerialElectron.js'], ({ Serial })=> {
   var Neopixel = function() {
     var _this = this;
 
