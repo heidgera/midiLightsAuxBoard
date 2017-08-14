@@ -38,14 +38,16 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
         midiStates[note] = vel;
         LEDs.setColor(note, vel, vel, vel);
         LEDs.show();
-        console.log(midiStates)
       }
     });
 
     setInterval(()=> {
-      LEDs.indicatorOn();
-      setTimeout(LEDs.indicatorOff, 500);
-    }, 1000);
+      //LEDs.indicatorOn();
+      //setTimeout(LEDs.indicatorOff, 500);
+      midiStates.forEach((item, ind)=> {
+        LEDs.setColor(ind, item,item,item);
+      });
+    }, 2000);
 
     document.onkeypress = (e)=> {
       if (e.key == ' ') console.log('Space pressed');
