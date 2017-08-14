@@ -20,7 +20,7 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
         if (el.name.includes('Axiom') && !newIn) newIn = el;
         console.log(el.name);
       });
-      midi.in.selectMIDIIn(el);
+      midi.in.selectMIDIIn(newIn);
     };
 
     midi.in.setNoteHandler((note, vel)=> {
