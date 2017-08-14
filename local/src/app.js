@@ -23,6 +23,8 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
       midi.in.selectMIDIIn(newIn);
     };
 
+    var midiStates = [];
+
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
         //console.log('Note ' + note + ' pressed at ' + vel);
@@ -33,9 +35,10 @@ obtain(['µ/midi.js', './src/LEDs.js'], (midi, { LEDs })=> {//, './src/LEDs.js'
         else if (c > 4) r = 0, g = 0, b = 1;
         else r = 1, g = 0, b = 0;
         LEDs.setColor(note, r * (vel - k) + b * k, g * (vel - k) + r * k, b * (vel - k) + g * k);*/
-
+        midiStates[note] = vel;
         LEDs.setColor(note, vel, vel, vel);
         LEDs.show();
+        console.log(midiStates)
       }
     });
 
