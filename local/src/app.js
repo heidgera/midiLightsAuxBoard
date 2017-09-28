@@ -61,9 +61,10 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         if (c > 60) r = 0, g = 1, b = 0;
         else if (c > 30) r = 0, g = 0, b = 1;
         else r = 1, g = 0, b = 0;
+        var s = vel / 127.;
 
         if (vel) {
-          pixels.set(note, r * (vel - k) + b * k, g * (vel - k) + r * k, b * (vel - k) + g * k);
+          pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
           pixels.show();
         } else {
           pixels.set(note, 0, 0, 0);
