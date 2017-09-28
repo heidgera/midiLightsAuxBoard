@@ -110,8 +110,11 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
       }, 500);
     }, 1000);*/
 
-    document.onkeypress = (e)=> {
-      if (e.key == ' ') console.log('Space pressed');
+    document.onkeyup = (e)=> {
+      if (e.which == 27) {
+        var electron = require('electron');
+        electron.remote.process.exit();
+      }
     };
 
   };
