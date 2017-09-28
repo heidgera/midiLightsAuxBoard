@@ -49,7 +49,6 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
 
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
-        console.log('here');
 
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
