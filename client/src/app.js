@@ -20,7 +20,10 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
     document.onkeypress = (e)=> {
       if (e.key == ' ') console.log('Space pressed');
-      else if (e.key == 'k') control.send({ setLights: lights });
+      else if (e.key == 'k') {
+        control.send({ setLights: lights });
+        console.log('Sent');
+      }
     };
 
   };

@@ -14,6 +14,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   wss.addListener('setLights', (dataSet, data)=> {
     pixels.data = dataSet;
+    console.log(dataSet);
     pixels.show();
   });
 
