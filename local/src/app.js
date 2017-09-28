@@ -57,7 +57,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
       fadeVal -= .05;
       console.log(`Setting fadeout to ${fadeVal}`);
       pixels.setEachRGB(
-        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [fadeVal * 3, 0, 0]
+        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [fadeVal * 32, 0, 0]
       );
       if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
     };
@@ -81,7 +81,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         else if (c > 30) r = 0, g = 0, b = 1;
         var s = vel / 127.;
 
-        if (note > 48) {
+        if (note >= 48) {
           if (vel) {
             noteOn[note] = true;
             pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
