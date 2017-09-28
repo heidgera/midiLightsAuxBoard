@@ -22,7 +22,7 @@ obtain(['rpi-ws281x-native'], (ws2812)=> {
 
     setEachRGB: function (cb) { // cb in form of (ind,arr)
       var _this = this;
-      console.log(cb({ r: (val >> 16) & 0xff, g: (val >> 8) & 0xff, b: val & 0xff }, ind, arr));
+      console.log(cb({ r: (0 >> 16) & 0xff, g: (0 >> 8) & 0xff, b: 0 & 0xff }, ind, arr));
       this.data = this.data.map((val, ind, arr)=>_this.color.apply(
         null,
         cb({ r: (val >> 16) & 0xff, g: (val >> 8) & 0xff, b: val & 0xff }, ind, arr)
