@@ -80,7 +80,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         else if (c > 30) r = 0, g = 0, b = 1;
         var s = vel / 127.;
 
-        if (synth > 48) {
+        if (note > 48) {
           if (vel) {
             noteOn[note] = true;
             pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
