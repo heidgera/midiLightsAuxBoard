@@ -72,7 +72,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        //console.log('Note ' + note + ' pressed at ' + vel);
+        console.log('Note ' + note + ' pressed at ' + vel);
         var r = 1, g = 0, b = 0;
         var c = note % 88;
         var k = (note % 30) * 8.5;
