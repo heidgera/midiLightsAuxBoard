@@ -1,9 +1,21 @@
 'use strict';
 
-obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LEDs.js'
+var obtains = [
+  'µ/midi.js',
+  './src/neopixels.js',
+  './src/server/express.js',
+  './src/server/wsServer.js',
+];
+
+obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.js'
   exports.app = {};
 
   pixels.init(88);
+
+  wss.addListener('setLights', (dataSet, data)=> {
+    pixels.data = dataSet;
+    pixels.show();
+  });
 
   var process = require('electron').remote.process;
 
