@@ -56,10 +56,10 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
 
         //console.log('Note ' + note + ' pressed at ' + vel);
         var r = 1, g = 0, b = 0;
-        var c = note % 12;
-        var k = (note % 4) * vel / 4;
-        if (c > 8) r = 0, g = 1, b = 0;
-        else if (c > 4) r = 0, g = 0, b = 1;
+        var c = note % 88;
+        var k = (note % 30);
+        if (c > 60) r = 0, g = 1, b = 0;
+        else if (c > 30) r = 0, g = 0, b = 1;
         else r = 1, g = 0, b = 0;
 
         if (vel) {
