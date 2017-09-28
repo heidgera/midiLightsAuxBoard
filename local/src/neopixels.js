@@ -9,7 +9,6 @@ obtain(['rpi-ws281x-native'], (ws2812)=> {
     color: (r, g, b)=>((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff),
 
     show: function () {
-      console.log('try showing');
       ws2812.render(this.data);
     },
 
