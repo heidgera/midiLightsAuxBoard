@@ -3,7 +3,7 @@
 obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LEDs.js'
   exports.app = {};
 
-  pixels.init(20);
+  pixels.init(88);
 
   var process = require('electron').remote.process;
 
@@ -55,14 +55,21 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         //if (vel == 0) midi.out.playNote(note, 0);
 
         //console.log('Note ' + note + ' pressed at ' + vel);
-        /*var r = 1, g = 0, b = 0;
+        var r = 1, g = 0, b = 0;
         var c = note % 12;
         var k = (note % 4) * vel / 4;
         if (c > 8) r = 0, g = 1, b = 0;
         else if (c > 4) r = 0, g = 0, b = 1;
-        else r = 1, g = 0, b = 0;*/
+        else r = 1, g = 0, b = 0;
 
-        //LEDs.setColor(note, r * (vel - k) + b * k, g * (vel - k) + r * k, b * (vel - k) + g * k);
+        if (vel) {
+          pixels.set(note, r * (vel - k) + b * k, g * (vel - k) + r * k, b * (vel - k) + g * k);
+          pixels.show();
+        } else {
+          pixels.set(note, 0, 0, 0);
+          pixels.show();
+        }
+
 
         //midiStates[note] = vel;
         //LEDs.setColor(note, vel, vel, vel);
@@ -70,7 +77,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
       }
     });
 
-    setInterval(()=> {
+    /*setInterval(()=> {
       pixels.set(0, 255, 0, 0);
       pixels.show();
 
@@ -78,7 +85,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         pixels.setEach(()=>0);
         pixels.show();
       }, 500);
-    }, 1000);
+    }, 1000);*/
 
     document.onkeypress = (e)=> {
       if (e.key == ' ') console.log('Space pressed');
