@@ -1,5 +1,5 @@
 obtain(['µ/SerialElectron.js'], ({ Serial })=> {
-  var Neopixel = function() {
+  var Neopixel = function () {
     var _this = this;
 
     var ser = new Serial();
@@ -18,7 +18,7 @@ obtain(['µ/SerialElectron.js'], ({ Serial })=> {
       else {
         ser.send([128 + 24, low, high, r, g, b]);
       }
-    }
+    };
 
     _this.show = ()=> {
       ser.send([128 + 64]);

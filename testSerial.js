@@ -1,5 +1,5 @@
 
-global.provide = ()=>{};
+global.provide = ()=> {};
 
 global.obtain = (addr, func)=> {
   var _this = this;
@@ -7,7 +7,7 @@ global.obtain = (addr, func)=> {
   var objs = [];
   if (addr.length <= 0) func();
   else {
-    addr.forEach(function(adr, ind, arr) {
+    addr.forEach(function (adr, ind, arr) {
       objs[ind] = require(adr.replace('µ', './common/src/muse/'));
     });
 
@@ -18,15 +18,15 @@ global.obtain = (addr, func)=> {
 
 //require('./common/src/muse/SerialElectron.js');
 obtain(['./local/src/LEDs.js'], ({ LEDs })=> {
-LEDs.setMaxLEDs(144);
+  LEDs.setMaxLEDs(144);
   setInterval(()=> {
-    LEDs.setColorRange(0, 143,1,0,1);
+    LEDs.setColorRange(0, 143, 1, 0, 1);
     LEDs.show();
     LEDs.indicatorOn();
     setTimeout(()=> {
       LEDs.indicatorOff();
-      LEDs.setColorRange(0,143,0,1,0);
+      LEDs.setColorRange(0, 143, 0, 1, 0);
       LEDs.show();
-    },500);
+    }, 500);
   }, 1000);
 });
