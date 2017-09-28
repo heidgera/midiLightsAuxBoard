@@ -56,7 +56,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
       clearTimeout(fadeTO);
       fadeVal -= .05;
       pixels.setEachRGB(
-        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [fadeVal * 1, 0, 0]
+        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [fadeVal * 3, 0, 0]
       );
       if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
     };
