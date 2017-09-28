@@ -16,8 +16,7 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
     console.log('started');
 
     setTimeout(()=> {
-      //LEDs.setColorRange(0, 144, 0, 0, 0);
-      pixels.setEach(()=>0);
+      pixels.setEachRGB(()=>[0, 0, 0]);
       pixels.show();
 
       //LEDs.show();
@@ -47,6 +46,26 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
 
     var midiStates = [];
 
+    var fadeVal = 0;
+
+    var noteOn = [];
+
+    var fadeTO = null;
+
+    var fadeOut = ()=> {
+      clearTimeout(fadeTO);
+      fadeVal -= .05;
+      pixels.setEachRGB(
+        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [fadeVal * 255, 0, 0]
+      );
+      if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
+    };
+
+    var onThenFade = (vel)=> {
+      fadeVal = vel / 127.;
+      fadeOut();
+    };
+
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
 
@@ -61,14 +80,19 @@ obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LE
         else if (c > 30) r = 0, g = 0, b = 1;
         var s = vel / 127.;
 
-        if (vel) {
-          pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
-          pixels.show();
+        if (synth > 48) {
+          if (vel) {
+            noteOn[note] = true;
+            pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
+            pixels.show();
+          } else {
+            noteOn[note] = false;
+            pixels.set(note, 0, 0, 0);
+            pixels.show();
+          }
         } else {
-          pixels.set(note, 0, 0, 0);
-          pixels.show();
+          if (vel) onThenFade(vel);
         }
-
 
         //midiStates[note] = vel;
         //LEDs.setColor(note, vel, vel, vel);
