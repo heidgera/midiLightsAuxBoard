@@ -1,4 +1,4 @@
-obtain(['fs', './src/utils.js'], (fs, { copyConfigFile, call: Call })=> {
+obtain(['fs', './src/utils.js'], (fs, { copyConfigFile })=> {
   var writeInterfaceFile = ()=> {
     copyConfigFile('./configFiles/interfaces', '/etc/network/interfaces');
   };
@@ -31,8 +31,8 @@ obtain(['fs', './src/utils.js'], (fs, { copyConfigFile, call: Call })=> {
       writeApdDefaultsFile();
       writeDhcpcdConfFile();
       writeDnsmasqConfFile(cfgObj.domainName);
-      var restart = new Call('./src/restartHotspot.sh');
-      restart.run();
+      //var restart = new Call('./src/restartHotspot.sh');
+      //restart.run();
     } else console.error('Error: Password must be 8 or more characters');
   };
 });

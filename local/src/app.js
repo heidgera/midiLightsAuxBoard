@@ -1,6 +1,6 @@
 'use strict';
 
-obtain(['µ/midi.js', './neopixels.js'], (midi, { pixels })=> {//, './src/LEDs.js'
+obtain(['µ/midi.js', './src/neopixels.js'], (midi, { pixels })=> {//, './src/LEDs.js'
   exports.app = {};
 
   pixels.init(20);
