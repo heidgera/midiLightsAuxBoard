@@ -82,6 +82,18 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       fadeOut();
     };
 
+    var rainbowRGB = (k, span)=> {
+      const third = span / 3;
+      var r = 1, g = 0, b = 0;
+      var c = note % span;
+      var k = 255 - (note % third) * (255 / third);
+      if (c >= 2 * third) r = 0, g = 0, b = 1;
+      else if (c >= third) r = 0, g = 1, b = 0;
+      else r = 1, g = 0, b = 0;
+
+      return { r: (r * (255 - k) + g * k), g: (g * (255 - k) + b * k), b: (b * (255 - k) + r * k) };
+    };
+
     midi.in.setNoteHandler((note, vel)=> {
       if (note > 0 && note < 88) {
 
@@ -89,18 +101,19 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         //if (vel == 0) midi.out.playNote(note, 0);
 
         console.log('Note ' + note + ' pressed at ' + vel);
-        var r = 1, g = 0, b = 0;
-        var c = note % 12;
-        var k = 255 - (note % 4) * 63.75;
+        /*var r = 1, g = 0, b = 0;
+        var c = note % 24;
+        var k = 255 - (note % 8) * 63.75;
         if (c >= 8) r = 0, g = 0, b = 1;
         else if (c >= 4) r = 0, g = 1, b = 0;
         else r = 1, g = 0, b = 0;
-        var s = vel / 127.;
+        var s = vel / 127.;*/
 
         if (note >= 48) {
           if (vel) {
             noteOn[note] = true;
-            pixels.set(note, s * (r * (255 - k) + g * k), s * (g * (255 - k) + b * k), s * (b * (255 - k) + r * k));
+            var rbow = rainbowRGB(note, 32);
+            pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
             pixels.show();
           } else {
             noteOn[note] = false;
