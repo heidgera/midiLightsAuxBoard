@@ -13,7 +13,8 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
   pixels.init(88);
 
   wss.addListener('setLights', (dataSet, data)=> {
-    if (dataSet.length == pixels.length) {
+    if (dataSet.length == pixels.data.length) {
+      dataSet.map((val)=>console.log(val));
       pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
       console.log(dataSet);
       pixels.show();
