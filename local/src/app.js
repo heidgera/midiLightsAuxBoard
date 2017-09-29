@@ -146,7 +146,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         }*/
         switch (keyStyles[note].mode) {
           case 'fade':
-            onThenFade(vel, keyStyles[note].color);
+            if (vel) onThenFade(vel, keyStyles[note].color);
             break;
           case 'rainbow': {
             var st = keyStyles[note].start;
