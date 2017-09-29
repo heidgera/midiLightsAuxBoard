@@ -90,13 +90,14 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
     var fadeTO = null;
 
-    var fadeOut = (color)=> {
+    var fadeOut = (col)=> {
       clearTimeout(fadeTO);
       fadeVal -= .05;
       if (fadeVal <= 0) fadeVal = 0;
+      col.map((val)=>console.log(val * fadeVal));
       pixels.setEachRGB(
         (cur, ind)=>
-          (noteOn[ind]) ? [cur.r, cur.g, cur.b] : color.map((val)=>val * fadeVal)
+          (noteOn[ind]) ? [cur.r, cur.g, cur.b] : col.map((val)=>val * fadeVal)
       );
       pixels.show();
       if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
@@ -104,7 +105,6 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
     var onThenFade = (vel, color)=> {
       fadeVal = vel / 127.;
-      console.log(color);
       fadeOut(color);
     };
 
