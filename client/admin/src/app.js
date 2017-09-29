@@ -10,6 +10,7 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
     control.connect();
 
     control.onConnect = ()=> {
+      console.log('Connecting to server...');
       control.send({ adminSession: 'password' });
     };
 
