@@ -12,10 +12,19 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   pixels.init(88);
 
+  var admin = null;
+
   wss.addListener('setLights', (dataSet, data)=> {
     if (dataSet.length == pixels.data.length) {
       pixels.setEachRGB((val, ind)=>dataSet[ind]);
       pixels.show();
+    }
+  });
+
+  wss.addListener('adminSession', (password, data, client)=> {
+    if (password == 'password') {
+      console.log('admin connected');
+      admin = client;
     }
   });
 
@@ -40,7 +49,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       var newIn = null;
       midi.in.devices.forEach((el)=> {
         console.log(el.name);
-        if (el.name.includes('Axiom') && !newIn) {
+        if (!el.name.includes('Through') && !newIn) {
           newIn = el;
           console.log(el.name);
         }
@@ -109,7 +118,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         else if (c >= 4) r = 0, g = 1, b = 0;
         else r = 1, g = 0, b = 0;
         */
-        if (vel) wss.broadcast({ notePressed: note });
+        if (vel) admin.sendPacket({ notePressed: note });
 
         var s = vel / 127.;
 

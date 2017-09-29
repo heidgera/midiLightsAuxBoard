@@ -31,6 +31,11 @@ obtain(['ws'], ({ Server })=> {
 
     wsServer.on('connection', function (ws) {
       wsServer.onClientConnect(ws);
+
+      ws.sendPacket = (obj)=> {
+        ws.send(JSON.stringify(obj));
+      };
+
       ws.on('message', function (message) {
         //console.log(message);
         var data = JSON.parse(message);
@@ -43,7 +48,7 @@ obtain(['ws'], ({ Server })=> {
               if (orderedCallbacks[data._id]) orderedCallbacks[data._id]();
             } else if (key == 'timeSync') {
               ws.send(JSON.stringify({ serverTime: Date.now() }));
-            } else if (key in listeners) listeners[key](data[key], data);
+            } else if (key in listeners) listeners[key](data[key], data, ws);
           }
         }
       });
