@@ -48,7 +48,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         for (var key in set) {
           if (set.hasOwnProperty(key)) {
             if (key != 'key') {
-              for (var i = set.range.low; i < range.high + 1; i++) {
+              for (var i = set.range.low; i < set.range.high + 1; i++) {
                 keyStyles[i][key] = set[key];
               }
             }
