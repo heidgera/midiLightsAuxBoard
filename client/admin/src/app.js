@@ -37,6 +37,12 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
           mode: 'fade',
           color: [0, 127, 0],
         }, });
+      } else if (e.key == 'r') {
+        control.send({ keyMode: {
+          range: { low: 50, high: 59 },
+          mode: 'color',
+          color: [0, 0, 127],
+        }, });
       }
     };
 

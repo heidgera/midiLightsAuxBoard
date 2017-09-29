@@ -38,11 +38,24 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   wss.addListener('keyMode', (set, data, client)=> {
     if (client === admin) {
-      for (var key in set) {
-        if (set.hasOwnProperty(key)) {
-          if (key != 'key') keyStyles[set.key][key] = set[key];
+      if (!set.range) {
+        for (var key in set) {
+          if (set.hasOwnProperty(key)) {
+            if (key != 'key') keyStyles[set.key][key] = set[key];
+          }
+        }
+      } else {
+        for (var key in set) {
+          if (set.hasOwnProperty(key)) {
+            if (key != 'key') {
+              for (var i = set.range.low; i < range.high + 1; i++) {
+                keyStyles[i][key] = set[key];
+              }
+            }
+          }
         }
       }
+
     }
   });
 
