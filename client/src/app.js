@@ -1,16 +1,11 @@
 'use strict';
 
-console.log('is it going?');
-
 obtain(['µ/commandClient.js'], ({ MuseControl })=> {
   exports.app = {};
 
   var control = new MuseControl(window.location.hostname);
 
-  console.log('loading');
-
   exports.app.start = ()=> {
-    console.log('started');
 
     control.connect();
 
