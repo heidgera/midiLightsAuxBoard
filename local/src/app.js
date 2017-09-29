@@ -92,15 +92,15 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         var r = 1, g = 0, b = 0;
         var c = note % 12;
         var k = 255 - (note % 4) * 63.75;
-        if (c > 8) r = 0, g = 1, b = 0;
-        else if (c > 4) r = 0, g = 0, b = 1;
+        if (c > 8) r = 0, g = 0, b = 1;
+        else if (c > 4) r = 0, g = 1, b = 0;
         else r = 1, g = 0, b = 0;
         var s = vel / 127.;
 
         if (note >= 48) {
           if (vel) {
             noteOn[note] = true;
-            pixels.set(note, s * (r * (255 - k) + b * k), s * (g * (255 - k) + r * k), s * (b * (255 - k) + g * k));
+            pixels.set(note, s * (r * (255 - k) + g * k), s * (g * (255 - k) + b * k), s * (b * (255 - k) + r * k));
             pixels.show();
           } else {
             noteOn[note] = false;
