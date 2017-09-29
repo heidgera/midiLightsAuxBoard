@@ -39,6 +39,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
     midi.in.onReady = ()=> {
       var newIn = null;
       midi.in.devices.forEach((el)=> {
+        console.log(el.name);
         if (el.name.includes('Axiom') && !newIn) {
           newIn = el;
           console.log(el.name);
@@ -100,7 +101,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        console.log('Note ' + note + ' pressed at ' + vel);
+        //console.log('Note ' + note + ' pressed at ' + vel);
         /*var r = 1, g = 0, b = 0;
         var c = note % 24;
         var k = 255 - (note % 8) * 63.75;
