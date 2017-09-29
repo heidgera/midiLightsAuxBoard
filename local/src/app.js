@@ -15,8 +15,8 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
   var keyStyles = [];
 
   for (var i = 0; i < pixels.data.length; i++) {
-    if (i < 48) keyStyles[i] = { type: 'fade', color: [127, 0, 0] };
-    else keyStyles[i] = { type: 'rainbow', start: 48, end: 80 };
+    if (i < 48) keyStyles[i] = { mode: 'fade', color: [127, 0, 0] };
+    else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80 };
   }
 
   var admin = null;
@@ -104,6 +104,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
     var onThenFade = (vel, color)=> {
       fadeVal = vel / 127.;
+      console.log(color);
       fadeOut(color);
     };
 
@@ -143,7 +144,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         } else {
           if (vel) onThenFade(vel);
         }*/
-        switch (keyStyles[note].type) {
+        switch (keyStyles[note].mode) {
           case 'fade':
             onThenFade(vel, keyStyles[note].color);
             break;
