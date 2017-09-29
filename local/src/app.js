@@ -94,7 +94,6 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       clearTimeout(fadeTO);
       fadeVal -= .05;
       if (fadeVal <= 0) fadeVal = 0;
-      col.map((val)=>console.log(val * fadeVal));
       pixels.setEachRGB(
         (cur, ind)=>
           (noteOn[ind]) ? [cur.r, cur.g, cur.b] : col.map((val)=>val * fadeVal)
