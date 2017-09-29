@@ -22,6 +22,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
   });
 
   wss.addListener('adminSession', (password, data, client)=> {
+    console.log(password);
     if (password == 'password') {
       console.log('admin connected');
       admin = client;
