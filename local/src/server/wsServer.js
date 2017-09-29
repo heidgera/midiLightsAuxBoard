@@ -37,7 +37,7 @@ obtain(['ws'], ({ Server })=> {
       };
 
       ws.on('message', function (message) {
-        console.log(message);
+        //console.log(message);
         var data = JSON.parse(message);
         for (var key in data) {
           if (data.hasOwnProperty(key)) {
