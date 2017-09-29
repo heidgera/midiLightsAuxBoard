@@ -14,7 +14,6 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   wss.addListener('setLights', (dataSet, data)=> {
     if (dataSet.length == pixels.data.length) {
-      //pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
       pixels.setEachRGB((val, ind)=>dataSet[ind]);
       pixels.show();
     }
@@ -91,10 +90,11 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
         console.log('Note ' + note + ' pressed at ' + vel);
         var r = 1, g = 0, b = 0;
-        var c = note % 88;
-        var k = (note % 30) * 8.5;
-        if (c > 60) r = 0, g = 1, b = 0;
-        else if (c > 30) r = 0, g = 0, b = 1;
+        var c = note % 12;
+        var k = (note % 4) * 63.75;
+        if (c > 8) r = 0, g = 1, b = 0;
+        else if (c > 4) r = 0, g = 0, b = 1;
+        else r = 1, g = 0, b = 0;
         var s = vel / 127.;
 
         if (note >= 48) {
