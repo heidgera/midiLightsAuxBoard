@@ -1,8 +1,8 @@
-obtain(['express', 'fs'], (express, fs)=> {
+obtain(['express', 'fs', 'path'], (express, fs, path)=> {
   var fileServer = express();
 
-  fileServer.use('', express.static('../client'));
-  fileServer.use('/common', express.static('../common'));
+  fileServer.use('', express.static(path.join(__dirname, '../client')));
+  fileServer.use('/common', express.static(path.join(__dirname, '../common')));
 
   fileServer.listen(80, function () {
     console.log('listening on 80');
