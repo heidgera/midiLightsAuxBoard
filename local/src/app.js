@@ -14,7 +14,8 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   wss.addListener('setLights', (dataSet, data)=> {
     if (dataSet.length == pixels.data.length) {
-      pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
+      //pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
+      pixels.setEachRGB((val, ind)=>dataSet[ind]);
       pixels.show();
     }
   });
