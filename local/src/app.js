@@ -14,9 +14,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   wss.addListener('setLights', (dataSet, data)=> {
     if (dataSet.length == pixels.data.length) {
-      dataSet.map((val)=>console.log(val));
       pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
-      console.log(dataSet);
       pixels.show();
     }
   });
@@ -71,7 +69,6 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
     var fadeOut = ()=> {
       clearTimeout(fadeTO);
       fadeVal -= .05;
-      console.log(`Setting fadeout to ${fadeVal}`);
       if (fadeVal <= 0) fadeVal = 0;
       pixels.setEachRGB(
         (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [Math.floor(fadeVal * 128), 0, 0]
