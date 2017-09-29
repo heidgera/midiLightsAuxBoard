@@ -150,7 +150,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
           case 'rainbow': {
             var st = keyStyles[note].start;
             var end = keyStyles[note].end;
-            var rbow = rainbowRGB(note - st, end - start);
+            var rbow = rainbowRGB(note - st, end - st);
             pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
             pixels.show();
           }
