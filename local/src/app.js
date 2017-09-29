@@ -92,8 +92,8 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         var r = 1, g = 0, b = 0;
         var c = note % 12;
         var k = 255 - (note % 4) * 63.75;
-        if (c > 8) r = 0, g = 0, b = 1;
-        else if (c > 4) r = 0, g = 1, b = 0;
+        if (c >= 8) r = 0, g = 0, b = 1;
+        else if (c >= 4) r = 0, g = 1, b = 0;
         else r = 1, g = 0, b = 0;
         var s = vel / 127.;
 
