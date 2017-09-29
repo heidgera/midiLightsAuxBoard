@@ -18,7 +18,7 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
       else if (c >= third) r = 0, g = 1, b = 0;
       else r = 1, g = 0, b = 0;
 
-      return { r: (r * (255 - k) + g * k), g: (g * (255 - k) + b * k), b: (b * (255 - k) + r * k) };
+      return [(r * (255 - k) + g * k), (g * (255 - k) + b * k), (b * (255 - k) + r * k)];
     };
 
     var holder = µ('#keyholder');
@@ -30,6 +30,7 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
       keys.push(µ('+div', holder));
       keys[i].className = 'key';
       var col = (keyStyles[i].mode == 'rainbow') ? rainbowRGB(i - 48, 32) : [127, 0, 0];
+      console.log(col);
       keys[i].style.backgroundColor = `rgba(${col[0]}, ${col[1]}, ${col[2]}, 1)`;
     }
 
