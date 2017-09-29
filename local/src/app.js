@@ -147,7 +147,11 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
           case 'fade':
             if (vel) onThenFade(vel, keyStyles[note].color);
             break;
+          case 'color':
+            if (vel) onThenFade(vel, keyStyles[note].color);
+            break;
           case 'rainbow': {
+            noteOn[note] = vel;
             var st = keyStyles[note].start;
             var end = keyStyles[note].end;
             var rbow = rainbowRGB(note - st, end - st);
