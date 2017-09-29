@@ -82,7 +82,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       fadeOut();
     };
 
-    var rainbowRGB = (k, span)=> {
+    var rainbowRGB = (note, span)=> {
       const third = span / 3;
       var r = 1, g = 0, b = 0;
       var c = note % span;
