@@ -19,17 +19,20 @@ body {
   background-color: #2a2a2a;
 }
 
-#outer {
-  position: absolute;
-  top:0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  width:90vmin;
-  height: 90vmin;
-  background-color: #fff;
-  border-radius: 45vmin;
+#keyholder {
+	position: relative;
+	top:0;
+	left: 0;
+	width: 100vw;
+}
+
+#key {
+	margin: auto;
+	width: 80vw;
+	height: 20px;
+	margin-top: 5px;
+	border-radius: 5px;
+	background-color: #dcc;
 }
 
 #track {

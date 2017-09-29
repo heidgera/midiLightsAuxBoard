@@ -7,6 +7,32 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
   exports.app.start = ()=> {
 
+    var keyStyles = [];
+
+    ar rainbowRGB = (note, span)=> {
+      const third = span / 3;
+      var r = 1, g = 0, b = 0;
+      var c = note % span;
+      var k = 255 - (note % third) * (255 / third);
+      if (c >= 2 * third) r = 0, g = 0, b = 1;
+      else if (c >= third) r = 0, g = 1, b = 0;
+      else r = 1, g = 0, b = 0;
+
+      return { r: (r * (255 - k) + g * k), g: (g * (255 - k) + b * k), b: (b * (255 - k) + r * k) };
+    };
+
+    var holder = µ('#keyholder');
+    var keys = [];
+
+    for (var i = 0; i < 88; i++) {
+      if (i < 48) keyStyles[i] = { mode: 'fade', color: [127, 0, 0] };
+      else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80 };
+      keys.push(µ('+div',holder));
+      keys[i].className = 'key';
+      var col = (keyStyles[i].mode == 'rainbow')?rainbowRGB(i-48,32):[127,0,0];
+      keys[i].style.backgroundColor = `rgba(${col[0]}, ${col[1]}, ${col[2]}, 1)`
+    }
+
     control.onConnect = ()=> {
       console.log('Connecting to server...');
       control.send({ adminSession: 'password' });
