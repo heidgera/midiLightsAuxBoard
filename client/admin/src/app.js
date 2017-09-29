@@ -7,12 +7,12 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
   exports.app.start = ()=> {
 
-    control.connect();
-
     control.onConnect = ()=> {
       console.log('Connecting to server...');
       control.send({ adminSession: 'password' });
     };
+
+    control.connect();
 
     control.addListener('notePressed', (note)=> {
       console.log(`${note} was pressed on the master`);
