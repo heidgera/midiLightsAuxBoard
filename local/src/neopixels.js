@@ -16,6 +16,10 @@ obtain(['rpi-ws281x-native'], (ws2812)=> {
       this.data[num] = this.color(r, g, b);
     },
 
+    setByArray: function(num, arr){
+      this.data[num] = this.color.apply(null,arr);
+    }
+
     setEach: function (cb) { // cb in form of (ind,arr)
       this.data = this.data.map((val, ind, arr)=>cb(ind, arr));
     },

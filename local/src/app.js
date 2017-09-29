@@ -165,7 +165,9 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
             if (vel) onThenFade(vel, keyStyles[note].color);
             break;
           case 'color':
-            if (vel) onThenFade(vel, keyStyles[note].color);
+            noteOn[note] = vel;
+            if (vel) pixels.setByArray(note, keyStyles[note].color);
+            pixels.show();
             break;
           case 'rainbow': {
             noteOn[note] = vel;
