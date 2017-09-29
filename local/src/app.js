@@ -36,9 +36,13 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
     }
   });
 
-  wss.addListener('keyStyle', (set, data, client)=> {
+  wss.addListener('keyMode', (set, data, client)=> {
     if (client === admin) {
-      //set.key;
+      for (var key in set) {
+        if (set.hasOwnProperty(key)) {
+          if (key != 'key') keyStyles[set.key][key] = set[key];
+        }
+      }
     }
   });
 

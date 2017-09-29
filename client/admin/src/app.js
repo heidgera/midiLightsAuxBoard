@@ -31,6 +31,12 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
       else if (e.key == 'k') {
         control.send({ setLights: lights });
         console.log('Sent');
+      } else if (e.key == 'j') {
+        control.send({ keyMode: {
+          key: 60,
+          mode: 'fade',
+          color: [0, 127, 0],
+        }, });
       }
     };
 
