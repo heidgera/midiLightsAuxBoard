@@ -3,9 +3,9 @@ obtain(['ws'], ({ Server })=> {
     window.wsServer = new Server({ port: 8080 });
     var webSock = null;
 
-    wsServer.broadcast = function (data) {
+    wsServer.broadcast = function (obj) {
       wsServer.clients.forEach(function each(client) {
-        client.send(data);
+        client.send(JSON.stringify(obj));
       });
     };
 

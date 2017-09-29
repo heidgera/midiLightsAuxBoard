@@ -9,6 +9,10 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
     control.connect();
 
+    control.addListener('notePressed', (note)=> {
+      console.log(`${note} was pressed on the master`);
+    });
+
     var lights = [];
 
     for (var i = 0; i < 88; i++) {

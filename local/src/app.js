@@ -109,6 +109,8 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         else if (c >= 4) r = 0, g = 1, b = 0;
         else r = 1, g = 0, b = 0;
         */
+        if (vel) wss.broadcast({ notePressed: note });
+
         var s = vel / 127.;
 
         if (note >= 48) {
