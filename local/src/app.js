@@ -142,7 +142,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        if (vel) admin.sendPacket({ notePressed: note });
+        if (vel && admin) admin.sendPacket({ notePressed: note });
 
         var s = vel / 127.;
 
