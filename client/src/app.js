@@ -5,6 +5,8 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
   var control = new MuseControl(window.location.hostname);
 
+  console.log('loading');
+
   exports.app.start = ()=> {
     console.log('started');
 
