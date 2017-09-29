@@ -113,7 +113,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         if (note >= 48) {
           if (vel) {
             noteOn[note] = true;
-            var rbow = rainbowRGB(note, 32);
+            var rbow = rainbowRGB(note - 48, 32);
             pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
             pixels.show();
           } else {
