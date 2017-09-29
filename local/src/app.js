@@ -12,6 +12,13 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
   pixels.init(88);
 
+  var keyStyles = [];
+
+  for (var i = 0; i < pixels.data.length; i++) {
+    if (i < 48) keyStyles[i] = { type: 'fade', color: [127, 0, 0] };
+    else keyStyles[i] = { type: 'rainbow', start: 48, end: 80 };
+  }
+
   var admin = null;
 
   wss.addListener('setLights', (dataSet, data)=> {
@@ -22,10 +29,16 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
   });
 
   wss.addListener('adminSession', (password, data, client)=> {
-    console.log(password);
+    //console.log(password);
     if (password == 'password') {
       console.log('admin connected');
       admin = client;
+    }
+  });
+
+  wss.addListener('keyStyle', (set, data, client)=> {
+    if (client === admin) {
+      //set.key;
     }
   });
 
@@ -49,7 +62,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
     midi.in.onReady = ()=> {
       var newIn = null;
       midi.in.devices.forEach((el)=> {
-        console.log(el.name);
+        //console.log(el.name);
         if (!el.name.includes('Through') && !newIn) {
           newIn = el;
           console.log(el.name);
@@ -69,7 +82,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       midi.out.select(newOut);
     };*/
 
-    var midiStates = [];
+    var lightStates = [];
 
     var fadeVal = 0;
 
@@ -77,20 +90,21 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
 
     var fadeTO = null;
 
-    var fadeOut = ()=> {
+    var fadeOut = (color)=> {
       clearTimeout(fadeTO);
       fadeVal -= .05;
       if (fadeVal <= 0) fadeVal = 0;
       pixels.setEachRGB(
-        (cur, ind)=>(noteOn[ind]) ? [cur.r, cur.g, cur.b] : [Math.floor(fadeVal * 128), 0, 0]
+        (cur, ind)=>
+          (noteOn[ind]) ? [cur.r, cur.g, cur.b] : color.map((val)=>val * fadeVal)
       );
       pixels.show();
       if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
     };
 
-    var onThenFade = (vel)=> {
+    var onThenFade = (vel, color)=> {
       fadeVal = vel / 127.;
-      fadeOut();
+      fadeOut(color);
     };
 
     var rainbowRGB = (note, span)=> {
@@ -111,19 +125,11 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        //console.log('Note ' + note + ' pressed at ' + vel);
-        /*var r = 1, g = 0, b = 0;
-        var c = note % 24;
-        var k = 255 - (note % 8) * 63.75;
-        if (c >= 8) r = 0, g = 0, b = 1;
-        else if (c >= 4) r = 0, g = 1, b = 0;
-        else r = 1, g = 0, b = 0;
-        */
         if (vel) admin.sendPacket({ notePressed: note });
 
         var s = vel / 127.;
 
-        if (note >= 48) {
+        /*if (note >= 48) {
           if (vel) {
             noteOn[note] = true;
             var rbow = rainbowRGB(note - 48, 32);
@@ -136,6 +142,22 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
           }
         } else {
           if (vel) onThenFade(vel);
+        }*/
+        switch (keyStyles[note].type) {
+          case 'fade':
+            onThenFade(vel, keyStyles[note].color);
+            break;
+          case 'rainbow': {
+            var st = keyStyles[note].start;
+            var end = keyStyles[note].end;
+            var rbow = rainbowRGB(note - st, end - start);
+            pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
+            pixels.show();
+          }
+
+            break;
+          default:
+
         }
       }
     });
