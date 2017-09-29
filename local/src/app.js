@@ -166,7 +166,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
             break;
           case 'color':
             noteOn[note] = vel;
-            pixels.setByArray(note, keyStyles[note].color.map((val)=> {val * s;}));
+            pixels.setByArray(note, keyStyles[note].color.map((val)=> val * s;));
             pixels.show();
             break;
           case 'rainbow': {
