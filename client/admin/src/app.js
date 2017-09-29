@@ -29,9 +29,9 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
       else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80 };
       keys.push(µ('+div', holder));
       keys[i].className = 'key';
-      var col = (keyStyles[i].mode == 'rainbow') ? rainbowRGB(i - 48, 32) : [127, 0, 0];
+      var col = (keyStyles[i].mode == 'rainbow') ? rainbowRGB(i - 48, 32).map(val=>Math.floor(val)) : [127, 0, 0];
       console.log(col);
-      keys[i].style.backgroundColor = `rgba(${col[0]}, ${col[1]}, ${col[2]}, 1)`;
+      keys[i].style.backgroundColor = `rgb(${col[0]}, ${col[1]}, ${col[2]})`;
     }
 
     control.onConnect = ()=> {
