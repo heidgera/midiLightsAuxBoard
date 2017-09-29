@@ -1,5 +1,7 @@
 'use strict';
 
+console.log('is it going?');
+
 obtain(['µ/commandClient.js'], ({ MuseControl })=> {
   exports.app = {};
 
