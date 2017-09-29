@@ -15,7 +15,7 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
     };
 
     control.addListener('notePressed', (note)=> {
-      //console.log(`${note} was pressed on the master`);
+      console.log(`${note} was pressed on the master`);
     });
 
     var lights = [];
