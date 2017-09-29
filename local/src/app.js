@@ -13,9 +13,11 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
   pixels.init(88);
 
   wss.addListener('setLights', (dataSet, data)=> {
-    pixels.data = dataSet;
-    console.log(dataSet);
-    pixels.show();
+    if (dataSet.length == pixels.length) {
+      pixels.data = dataSet.map((val)=>pixels.color.apply(null, val));
+      console.log(dataSet);
+      pixels.show();
+    }
   });
 
   var process = require('electron').remote.process;
