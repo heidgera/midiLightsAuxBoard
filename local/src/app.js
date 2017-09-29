@@ -100,7 +100,7 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
           (noteOn[ind]) ? [cur.r, cur.g, cur.b] : col.map((val)=>val * fadeVal)
       );
       pixels.show();
-      if (fadeVal > 0) fadeTO = setTimeout(fadeOut, 50);
+      if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
     };
 
     var onThenFade = (vel, color)=> {
