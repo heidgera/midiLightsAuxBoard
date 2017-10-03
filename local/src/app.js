@@ -70,13 +70,13 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   var chords = [];
 
-  chords.set = (set)=> {
+  /*chords.set = (set)=> {
     chords.splice(0, chords.length);
     set.forEach(function (chrd, ind, arr) {
       chords.push(new Chord(chrd.keys, chrd.config));
     });
 
-  };
+  };*/
 
   var holdColor = [];
 
@@ -163,7 +163,12 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   });
 
   wss.addListener('setChords', (clientChords, data, client)=> {
-    if (client === admin) chords.set(clientChords);
+    if (client === admin) {
+      chords = [];
+      clientChords.forEach(function (chrd, ind, arr) {
+        chords.push(new Chord(chrd.keys, chrd.config));
+      });
+    }//chords.set(clientChords);
   });
 
   wss.addListener('setConfiguration', (config, data, client)=> {
