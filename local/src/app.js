@@ -174,9 +174,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   wss.addListener('setConfiguration', (config, data, client)=> {
     if (client === admin) {
       config.forEach(function (cfg, ind, arr) {
-        cfg.color = (cfg.color) ?
-          new Color(cfg.color) :
-          rainbow(ind - cfg.start, cfg.end - cfg.start);
+        if (cfg.mode == 'fade') console.log(cfg);
+        cfg.color = new Color(cfg.color);
       });
 
       keyStyles = config;
