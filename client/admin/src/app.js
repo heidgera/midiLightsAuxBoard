@@ -1,38 +1,37 @@
 'use strict';
 
-obtain(['µ/commandClient.js'], ({ MuseControl })=> {
+obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseControl }, { Color, rainbow }, { Keyboard, midiKeyOffset: mkOff })=> {
   exports.app = {};
 
   var control = new MuseControl(window.location.hostname);
 
   exports.app.start = ()=> {
 
-    var keyStyles = [];
+    var keys = new Keyboard(µ('#keyholder'));
 
-    var rainbowRGB = (note, span)=> {
-      const third = span / 3;
-      var r = 1, g = 0, b = 0;
-      var c = note % span;
-      var k = 255 - (note % third) * (255 / third);
-      if (c >= 2 * third) r = 0, g = 0, b = 1;
-      else if (c >= third) r = 0, g = 1, b = 0;
-      else r = 1, g = 0, b = 0;
-
-      return [(r * (255 - k) + g * k), (g * (255 - k) + b * k), (b * (255 - k) + r * k)];
+    var Chord = function (cKeys, config) {
+      var name = cKeys.reduce((acc, val)=>
+        acc + ((acc.length) ? '-' : '') + keys[val - mkOff].getAttribute('note').replace('_sharp', '#'), '');
+      return {
+        name: name,
+        keys: cKeys,
+        config: config,
+      };
     };
 
-    var holder = µ('#keyholder');
-    var keys = [];
+    var chords = [new Chord([10, 14, 16], {})];
 
-    for (var i = 0; i < 88; i++) {
-      if (i < 48) keyStyles[i] = { mode: 'fade', color: [127, 0, 0] };
-      else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80 };
-      keys.push(µ('+div', holder));
-      keys[i].className = 'key';
-      var col = (keyStyles[i].mode == 'rainbow') ? rainbowRGB(i - 48, 32).map(val=>Math.floor(val)) : [127, 0, 0];
-      console.log(col);
-      keys[i].style.backgroundColor = `rgb(${col[0]}, ${col[1]}, ${col[2]})`;
-    }
+    var currentChord = -1;
+
+    keys.forEach(function (key, ind, arr) {
+      if (key.midiNum < 48) key.lightStyle = { mode: 'fade', color: new Color([127, 0, 0]) };
+      else key.lightStyle = { mode: 'rainbow', start: 48, end: 80 };
+      if (key.lightStyle.mode == 'rainbow') {
+        key.lightStyle.color = rainbow(key.midiNum - 48, 32);
+      }
+
+      key.style.backgroundColor = key.lightStyle.color.styleString();
+    });
 
     control.onConnect = ()=> {
       console.log('Connecting to server...');
@@ -41,9 +40,180 @@ obtain(['µ/commandClient.js'], ({ MuseControl })=> {
 
     control.connect();
 
-    control.addListener('notePressed', (note)=> {
-      //console.log(`${note} was pressed on the master`);
+    control.addListener('notePressed', (key)=> {
+      if (key.vel && key.note >= 0) {
+        keys[key.note].toggle();
+      }
     });
+
+    control.addListener('listMIDI', (reply)=> {
+      console.log(reply.devices);
+    });
+
+    control.addListener('keyConfig', (config)=> {
+      config.forEach(function (cfg, ind, arr) {
+        cfg.color = (cfg.color) ?
+          new Color(cfg.color) :
+          rainbow(ind - cfg.start, cfg.end - cfg.start);
+      });
+
+      keys.forEach(function (key, ind, arr) {
+        key.lightStyle = config[ind];
+        key.style.backgroundColor = key.lightStyle.color.styleString();
+      });
+    });
+
+    var getNum = el => isNaN(parseInt(el.value)) ? 0 : parseInt(el.value);
+
+    var makeConfig = (which)=> {
+      var cfg = {};
+      cfg.mode = µ('[name="mode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
+      cfg.color = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
+      cfg.range = { low: getNum(µ('#rangeStart')), high: getNum(µ('#rangeEnd')) };
+      cfg.time = getNum(µ('#actTime'));
+
+      if (cfg.range.high - cfg.range.low <= 0) {
+        cfg.range.high = 87;
+        cfg.range.low = 0;
+      }
+
+      if (µ('#rainbow').checked) {
+        cfg.color = rainbow(which - cfg.range.low, cfg.range.high - cfg.range.low);
+        console.log(cfg.color);
+      }
+
+      return cfg;
+    };
+
+    µ('#read').onclick = (e)=> {
+      e.preventDefault();
+      control.send({ getConfiguration: { low: 0, high: 88 } });
+      control.send({ getChords: true });
+    };
+
+    µ('#write').onclick = (e)=> {
+      e.preventDefault();
+      control.send({ setConfiguration: keys.map(key=>key.lightStyle) });
+      control.send({ setChords: chords });
+    };
+
+    µ('#settings').onclick = (e)=> {
+      e.preventDefault();
+      control.send({ requestMIDIDevices: 'input' });
+    };
+
+    µ('#selectAll').onclick = (e)=> {
+      e.preventDefault();
+      keys.selectAll();
+    };
+
+    µ('#closeConfig').onclick = (e)=> {
+      e.preventDefault();
+      keys.deselectAll();
+      µ('#configurator').hidden = true;
+    };
+
+    µ('#chords').onchange = ()=> {
+      var val = µ('#chords').value;
+      if (val >= 0) {
+        keys.deselectAll(()=> {currentChord = val;});
+        chords[val].keys.forEach(function (key, ind, arr) {
+          keys[key - mkOff].select();
+        });
+      }
+    };
+
+    µ('#deleteChord').onclick = (e)=> {
+      e.preventDefault();
+      if (currentChord > -1) {
+        chords.splice(currentChord, 1);
+      }
+
+      keys.deselectAll();
+
+      µ('#configurator').hidden = true;
+    };
+
+    µ('#saveChord').onclick = (e)=> {
+      e.preventDefault();
+
+      var sKeys = keys.filter(val=>val.selected).map(val=>val.midiNum);
+      console.log(sKeys);
+      var cfg = makeConfig(getNum(µ('#rangeMid')));
+      console.log(cfg);
+      if (currentChord > -1 && sKeys.toString() == chords[currentChord].keys.toString()) {
+        chords[currentChord] = new Chord(sKeys, cfg);
+      } else {
+        chords.push(new Chord(sKeys, cfg));
+      }
+
+      keys.deselectAll();
+
+      µ('#configurator').hidden = true;
+    };
+
+    µ('#saveClose').onclick = (e)=> {
+      e.preventDefault();
+      keys.deselectAll();
+      µ('#configurator').hidden = true;
+    };
+
+    µ('#saveClose').onclick = (e)=> {
+      e.preventDefault();
+
+      keys.forEach(function (key, ind, arr) {
+        if (key.selected) {
+          key.lightStyle = makeConfig(ind);
+
+          key.style.backgroundColor = key.lightStyle.color.styleString();
+        }
+      });
+
+      keys.deselectAll();
+
+      µ('#configurator').hidden = true;
+    };
+
+    keys.onSelect = (which)=> {
+      µ('#configurator').hidden = false;
+      if (chords.length) {
+        var cDiv = µ('#chords');
+        cDiv.innerHTML = '<option value = "-1">Select Chord</span>';
+        chords.forEach(function (chord, ind, arr) {
+          let newOpt = µ('+option', cDiv);
+          newOpt.value = ind;
+          newOpt.textContent = chord.name;
+        });
+      } else {
+        var cDiv = µ('#chords');
+        cDiv.innerHTML = '<option value = "-1">No Chords</span>';
+      }
+
+      µ('#whichKeys').textContent = keys.selectionString();
+    };
+
+    keys.onDeselect = (which)=> {
+      if (keys.noneSelected()) currentChord = -1;
+      µ('#configurator').hidden = keys.noneSelected();
+      µ('#whichKeys').textContent = keys.selectionString();
+    };
+
+    var makeSampleColor = ()=> {
+      var col = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
+      µ('#sampleColor').style.backgroundColor = col.styleString();
+    };
+
+    µ('#rCol').onblur = makeSampleColor;
+    µ('#gCol').onblur = makeSampleColor;
+    µ('#bCol').onblur = makeSampleColor;
+
+    µ('#rainbow').onchange = ()=> {
+      if (µ('#rainbow').checked) {
+        µ('#rCol').disabled = µ('#gCol').disabled = µ('#bCol').disabled = true;
+      } else {
+        µ('#rCol').disabled = µ('#gCol').disabled = µ('#bCol').disabled = false;
+      }
+    };
 
     var lights = [];
 

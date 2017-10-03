@@ -7,24 +7,148 @@ var obtains = [
   './src/server/wsServer.js',
 ];
 
-obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.js'
+obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   exports.app = {};
 
   pixels.init(88);
 
+  var mkOff = 9; //Piano keyboards start at midi 9
+
   var keyStyles = [];
 
   for (var i = 0; i < pixels.data.length; i++) {
-    if (i < 48) keyStyles[i] = { mode: 'fade', color: [127, 0, 0] };
-    else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80 };
+    if (i < 48) keyStyles[i] = { mode: 'fade', color: new Color([127, 0, 0]) };
+    else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80, color: rainbow(i - 48, 32) };
   }
 
   var admin = null;
+
+  var noteHeld = [];
+
+  var Chord = function (cKeys, config) {
+    this.keys = cKeys;
+    let keypresses = [];
+    this.config = config;
+
+    let timer = null;
+
+    let reset = ()=> {
+      keypresses = [];
+    };
+
+    var fired = false;
+
+    var allPressed = ()=>this.keys.reduce((acc, v, i)=>acc && keypresses[i], true);
+
+    this.launch = ()=> {
+      var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / this.keys.length;
+      setLightsFromConfig(this.config, scale);
+    };
+
+    this.check = (note, vel)=> {
+      var ind = this.keys.indexOf(note);
+      if (ind > -1) {
+        keypresses[ind] = vel;
+        clearTimeout(timer);
+        if (!fired && allPressed()) this.launch();
+        else if (vel && !fired) timer = setTimeout(reset, 250);
+        fired = allPressed();
+      }
+    };
+  };
+
+  var holdColor = [];
+
+  var fadeVal = 0;
+
+  var fadeTO = null;
+
+  var fadeOut = (col)=> {
+    clearTimeout(fadeTO);
+    fadeVal -= .05;
+    if (fadeVal <= 0) fadeVal = 0;
+    pixels.setEachRGB(
+      (cur, ind)=>(holdColor[ind]) ? cur : col.scale(fadeVal)
+    );
+    pixels.show();
+    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
+  };
+
+  var onThenFade = (vel, color)=> {
+    fadeVal = vel / 127.;
+    fadeOut(color);
+  };
+
+  var setLightsFromConfig = (cfg, s, note, range)=> {
+    switch (cfg.mode) {
+      case 'fade':
+        if (vel) onThenFade(vel, cfg.color);
+        break;
+      case 'color':
+        if (note) {
+          holdColor[note] = vel;
+          pixels.setByArray(note, cfg.color.scale(s));
+        } else if (cfg.range) {
+          for (var i = cfg.range.low; i < cfg.range.high; i++) {
+            pixels.setByArray(i, cfg.color.scale(s));
+          }
+        }
+
+        pixels.show();
+        break;
+      case 'pulse':
+
+        //code for pulse
+        break;
+      default:
+
+    }
+  };
 
   wss.addListener('setLights', (dataSet, data)=> {
     if (dataSet.length == pixels.data.length) {
       pixels.setEachRGB((val, ind)=>dataSet[ind]);
       pixels.show();
+    }
+  });
+
+  wss.addListener('requestMIDIDevices', (request, data, client)=> {
+    if (client === admin) {
+      var mid = (request == 'input') ? midi.in : midi.out;
+      admin.sendPacket({
+        listMIDI: {
+          which: request,
+          devices: mid.devices.map((dev)=>dev.name),
+        },
+      });
+    }
+  });
+
+  wss.addListener('getConfiguration', (span, data, client)=> {
+    if (client === admin) admin.sendPacket({
+      keyConfig: keyStyles,
+    });
+  });
+
+  /*wss.addListener('getChords', (reply, data, client)=> {
+    if (client === admin) admin.sendPacket({
+      serverChords: chords,
+    });
+  });
+
+  wss.addListener('setChords', (clientChords, data, client)=> {
+    if (client === admin) chords.set(clientChords);
+  });*/
+
+  wss.addListener('setConfiguration', (config, data, client)=> {
+    if (client === admin) {
+      config.forEach(function (cfg, ind, arr) {
+        cfg.color = (cfg.color) ?
+          new Color(cfg.color) :
+          rainbow(ind - cfg.start, cfg.end - cfg.start);
+      });
+
+      keyStyles = config;
     }
   });
 
@@ -36,26 +160,22 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
     }
   });
 
+  var setStyle = (set, key, which)=> {
+    if (set.hasOwnProperty(key) && key != 'key') {
+      if (key == 'color') keyStyles[which][key] = new Color(set[key]);
+      else keyStyles[which][key] = set[key];
+    }
+  };
+
   wss.addListener('keyMode', (set, data, client)=> {
     if (client === admin) {
       if (!set.range) {
-        for (var key in set) {
-          if (set.hasOwnProperty(key)) {
-            if (key != 'key') keyStyles[set.key][key] = set[key];
-          }
-        }
-      } else {
-        for (var key in set) {
-          if (set.hasOwnProperty(key)) {
-            if (key != 'key') {
-              for (var i = set.range.low; i < set.range.high + 1; i++) {
-                keyStyles[i][key] = set[key];
-              }
-            }
-          }
+        for (var key in set) setStyle(set, key, set.key);
+      } else for (var key in set) {
+        for (var i = set.range.low; i < set.range.high + 1; i++) {
+          setStyle(set, key, i);
         }
       }
-
     }
   });
 
@@ -99,52 +219,17 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
       midi.out.select(newOut);
     };*/
 
-    var lightStates = [];
-
-    var fadeVal = 0;
-
-    var noteOn = [];
-
-    var fadeTO = null;
-
-    var fadeOut = (col)=> {
-      clearTimeout(fadeTO);
-      fadeVal -= .05;
-      if (fadeVal <= 0) fadeVal = 0;
-      pixels.setEachRGB(
-        (cur, ind)=>
-          (noteOn[ind]) ? [cur.r, cur.g, cur.b] : col.map((val)=>val * fadeVal)
-      );
-      pixels.show();
-      if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
-    };
-
-    var onThenFade = (vel, color)=> {
-      fadeVal = vel / 127.;
-      fadeOut(color);
-    };
-
-    var rainbowRGB = (note, span)=> {
-      const third = span / 3;
-      var r = 1, g = 0, b = 0;
-      var c = note % span;
-      var k = 255 - (note % third) * (255 / third);
-      if (c >= 2 * third) r = 0, g = 0, b = 1;
-      else if (c >= third) r = 0, g = 1, b = 0;
-      else r = 1, g = 0, b = 0;
-
-      return { r: (r * (255 - k) + g * k), g: (g * (255 - k) + b * k), b: (b * (255 - k) + r * k) };
-    };
-
     midi.in.setNoteHandler((note, vel)=> {
-      if (note > 0 && note < 88) {
+      if (note >= 9 && note < 97) {
+        note -= 9;
 
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        if (vel && admin) admin.sendPacket({ notePressed: note });
+        if (admin) admin.sendPacket({ notePressed: { note: note, vel: vel } });
 
         var s = vel / 127.;
+        noteHeld[note] = vel;
 
         /*if (note >= 48) {
           if (vel) {
@@ -165,20 +250,21 @@ obtain(obtains, (midi, { pixels }, { fileServer }, { wss })=> {//, './src/LEDs.j
             if (vel) onThenFade(vel, keyStyles[note].color);
             break;
           case 'color':
-            noteOn[note] = vel;
-            pixels.setByArray(note, keyStyles[note].color.map((val)=> val * s));
+            holdColor[note] = vel;
+            pixels.setByArray(note, keyStyles[note].color.scale(s));
             pixels.show();
             break;
-          case 'rainbow': {
-            noteOn[note] = vel;
-            var st = keyStyles[note].start;
-            var end = keyStyles[note].end;
-            var rbow = rainbowRGB(note - st, end - st);
-            pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
-            pixels.show();
-          }
 
-            break;
+          // case 'rainbow': {
+          //   holdColor[note] = vel;
+          //   var st = keyStyles[note].start;
+          //   var end = keyStyles[note].end;
+          //   var rbow = rainbow(note - st, end - st);
+          //   pixels.set(note, rbow.scale(s));
+          //   pixels.show();
+          // }
+          //
+          //   break;
           default:
 
         }

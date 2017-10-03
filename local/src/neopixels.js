@@ -1,15 +1,20 @@
-obtain(['rpi-ws281x-native'], (ws2812)=> {
+obtain(['µ/color.js'], ({ rainbow, Color }, ws2812)=> {//'rpi-ws281x-native'
+
+  exports.Color = Color;
+
+  exports.rainbow = rainbow;
+
   exports.pixels = {
     init: function (numLEDs) {
       var _this = this;
       _this.data = new Uint32Array(numLEDs);
-      ws2812.init(numLEDs);
+      //ws2812.init(numLEDs);
     },
 
     color: (r, g, b)=>((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff),
 
     show: function () {
-      ws2812.render(this.data);
+      //ws2812.render(this.data);
     },
 
     set: function (num, r, g, b) {
@@ -28,10 +33,10 @@ obtain(['rpi-ws281x-native'], (ws2812)=> {
       var _this = this;
       this.data = this.data.map((val, ind, arr)=>_this.color.apply(
         null,
-        cb({ r: (val >> 16) & 0xff, g: (val >> 8) & 0xff, b: val & 0xff }, ind, arr)
+        cb(new Color([(val >> 16) & 0xff, (val >> 8) & 0xff, val & 0xff]), ind, arr)
       ));
     },
 
-    reset: ws2812.reset,
+    //reset: ws2812.reset,
   };
 });

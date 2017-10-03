@@ -7,8 +7,57 @@
   	<link rel="stylesheet" href="css/style.css"></link>
   </head>
   <body>
-    <div id='menuBar'></div>
+    <div id='menuBar'>
+      <span class='title'>MidiLights</span>
+      <span class='menuButton' id='read'>Read Config</span>
+      <span class='menuButton' id='write'>Write Config</span>
+      <span class='menuButton' id='settings'>Settings</span>
+    </div>
     <div id='keyholder'>
+    </div>
+    <div id='configurator' hidden>
+      <div class='configTitle'>Configuring
+        <span id='whichKeys'></span>
+
+        <span class='menuButton' id='selectAll'>Select All</span>
+        <span class='close' id='closeConfig'>X</span>
+        <select id='chords'>
+          <option>No Chords present</span>
+        </select>
+        <span>or Select Chord to Edit:</span>
+      </div>
+      <div id='options'>
+        <form id='modeSelect'>
+          <p>Select Mode</p><br>
+          <!-- <input type="radio" name="mode" value="rainbow"><span>Rainbow</span><br> -->
+          <input type="radio" name="mode" value="color"><span>Color</span><br>
+          <input type="radio" name="mode" value="fade"><span>Fade</span><br>
+          <input type="radio" name="mode" value="pulse"><span>Pulse</span>
+        </form>
+        <div id='globalOpts'>
+          <p>Specify Options</p>
+          <div>Color:
+            <span id='sampleColor'></span>
+            <input id="rainbow" type="checkbox">
+            <span>Rainbow</span>
+          </div>
+          <span>R: <input type='text' id='rCol'></span>
+          <span>G: <input type='text' id='gCol'></span>
+          <span>B: <input type='text' id='bCol'></span><br><br>
+          <div>Range:</div>
+          <span>Low: <input type='text' id='rangeStart'></span>
+          <span>Mid: <input type='text' id='rangeMid'></span>
+          <span>High: <input type='text' id='rangeEnd'></span><br><br>
+          <div>Time:</div>
+          <span>Total time (milliseconds): <input type='text' id='actTime'></span><br><br>
+        </div>
+        <div id='outputOpts'>
+          <span class='menuButton' id='saveClose'>Save and Close</span>
+          <span class='menuButton' id='cancel'>Cancel</span>
+          <span class='menuButton' id='saveChord'>Save as Chord</span>
+          <span class='menuButton' id='deleteChord'>Delete Chord</span>
+        </div>
+      </div>
     </div>
   </body>
 </html>
