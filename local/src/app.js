@@ -84,26 +84,27 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   var fadeTO = null;
 
-  var fadeOut = (col)=> {
+  var fadeOut = (cfg)=> {
     clearTimeout(fadeTO);
     fadeVal -= .05;
     if (fadeVal <= 0) fadeVal = 0;
     pixels.setEachRGB(
-      (cur, ind)=>(holdColor[ind]) ? cur : col.scale(fadeVal)
+      (cur, ind)=>(holdColor[ind]) ? cur :
+        ((cfg.rainbow) ? rainbow(ind - cfg.range.low, cfg.range.high - cfg.range.low) : cfg.color).scale(fadeVal)
     );
     pixels.show();
-    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
+    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), 50);
   };
 
-  var onThenFade = (scale, color, time)=> {
+  var onThenFade = (scale, cfg, time)=> {
     fadeVal = scale;
-    fadeOut(color);
+    fadeOut(cfg);
   };
 
   var setLightsFromConfig = (cfg, s, note, range)=> {
     switch (cfg.mode) {
       case 'fade':
-        if (s) onThenFade(s, cfg.color);
+        if (s) onThenFade(s, cfg);
         break;
       case 'color':
         if (note) {
