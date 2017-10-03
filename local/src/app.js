@@ -42,9 +42,17 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
     var allPressed = ()=>this.keys.reduce((acc, v, i)=>acc && keypresses[i], true);
 
+    var nextCheck = (pressed)=> {};
+
     this.launch = ()=> {
       var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / this.keys.length;
       setLightsFromConfig(this.config, scale);
+      if (this.config.mode = 'color') nextCheck = (pressed)=> {
+        if (!pressed) {
+          setLightsFromConfig(this.config, 0);
+          nextCheck = ()=> {};
+        }
+      };
     };
 
     this.check = (note, vel)=> {
@@ -55,6 +63,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         if (!fired && allPressed()) this.launch();
         else if (vel && !fired) timer = setTimeout(reset, 250);
         fired = allPressed();
+        nextCheck(fired);
       }
     };
   };
