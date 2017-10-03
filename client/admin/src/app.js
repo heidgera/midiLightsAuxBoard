@@ -19,7 +19,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       };
     };
 
-    var chords = [new Chord([10, 14, 16], {})];
+    var chords = []; //new Chord([10, 14, 16], {})
 
     var currentChord = -1;
 
@@ -41,13 +41,21 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
     control.connect();
 
     control.addListener('notePressed', (key)=> {
-      if (key.vel && key.note >= 0) {
-        keys[key.note].toggle();
+      if (key.vel && key.note >= mkOff) {
+        keys[key.note - mkOff].toggle();
       }
     });
 
     control.addListener('listMIDI', (reply)=> {
       console.log(reply.devices);
+    });
+
+    control.addListener('serverChords', (servChrd)=> {
+      //console.log(reply.devices);
+      chords = [];
+      servChrd.forEach(function (chrd, ind, arr) {
+        chords.push(new Chord(chrd.keys, chrd.config));
+      });
     });
 
     control.addListener('keyConfig', (config)=> {
@@ -69,7 +77,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       var cfg = {};
       cfg.mode = µ('[name="mode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
       cfg.color = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
-      cfg.range = { low: getNum(µ('#rangeStart')), high: getNum(µ('#rangeEnd')) };
+      cfg.range = { low: getNum(µ('#rangeStart') - 9), high: getNum(µ('#rangeEnd') - 9) };
       cfg.time = getNum(µ('#actTime'));
 
       if (cfg.range.high - cfg.range.low <= 0) {

@@ -30,6 +30,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     let keypresses = [];
     this.config = config;
 
+    this.config.color = new Color(this.config.color);
+
     let timer = null;
 
     let reset = ()=> {
@@ -57,6 +59,16 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     };
   };
 
+  var chords = [];
+
+  chords.set = (set)=> {
+    chords.length = 0;
+    set.forEach(function (chrd, ind, arr) {
+      chords.push(new Chord(chrd.keys, chrd.config));
+    });
+
+  };
+
   var holdColor = [];
 
   var fadeVal = 0;
@@ -74,15 +86,15 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
   };
 
-  var onThenFade = (vel, color)=> {
-    fadeVal = vel / 127.;
+  var onThenFade = (scale, color)=> {
+    fadeVal = scale;
     fadeOut(color);
   };
 
   var setLightsFromConfig = (cfg, s, note, range)=> {
     switch (cfg.mode) {
       case 'fade':
-        if (vel) onThenFade(vel, cfg.color);
+        if (s) onThenFade(s, cfg.color);
         break;
       case 'color':
         if (note) {
@@ -130,7 +142,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     });
   });
 
-  /*wss.addListener('getChords', (reply, data, client)=> {
+  wss.addListener('getChords', (reply, data, client)=> {
     if (client === admin) admin.sendPacket({
       serverChords: chords,
     });
@@ -138,7 +150,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   wss.addListener('setChords', (clientChords, data, client)=> {
     if (client === admin) chords.set(clientChords);
-  });*/
+  });
 
   wss.addListener('setConfiguration', (config, data, client)=> {
     if (client === admin) {
@@ -153,7 +165,6 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   });
 
   wss.addListener('adminSession', (password, data, client)=> {
-    //console.log(password);
     if (password == 'password') {
       console.log('admin connected');
       admin = client;
@@ -192,8 +203,6 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     setTimeout(()=> {
       pixels.setEachRGB(()=>[0, 0, 0]);
       pixels.show();
-
-      //LEDs.show();
     }, 1000);
 
     midi.in.onReady = ()=> {
@@ -221,7 +230,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
     midi.in.setNoteHandler((note, vel)=> {
       if (note >= 9 && note < 97) {
-        note -= 9;
+        //note -= 9;
 
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
@@ -231,43 +240,10 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         var s = vel / 127.;
         noteHeld[note] = vel;
 
-        /*if (note >= 48) {
-          if (vel) {
-            noteOn[note] = true;
-            var rbow = rainbowRGB(note - 48, 32);
-            pixels.set(note, s * rbow.r, s * rbow.g, s * rbow.b);
-            pixels.show();
-          } else {
-            noteOn[note] = false;
-            pixels.set(note, 0, 0, 0);
-            pixels.show();
-          }
-        } else {
-          if (vel) onThenFade(vel);
-        }*/
-        switch (keyStyles[note].mode) {
-          case 'fade':
-            if (vel) onThenFade(vel, keyStyles[note].color);
-            break;
-          case 'color':
-            holdColor[note] = vel;
-            pixels.setByArray(note, keyStyles[note].color.scale(s));
-            pixels.show();
-            break;
+        chords.forEach((chrd, i)=>chrd.check(note, vel));
 
-          // case 'rainbow': {
-          //   holdColor[note] = vel;
-          //   var st = keyStyles[note].start;
-          //   var end = keyStyles[note].end;
-          //   var rbow = rainbow(note - st, end - st);
-          //   pixels.set(note, rbow.scale(s));
-          //   pixels.show();
-          // }
-          //
-          //   break;
-          default:
+        setLightsFromConfig(keyStyles[note], s, note);
 
-        }
       }
     });
 
