@@ -219,11 +219,11 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('#rainbow').onchange = ()=> {
       if (µ('#rainbow').checked) {
-        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = true;
-        µ('#rbowMin').hidden = µ('#rbowMax').hidden = false;
+        µ('#colorInput').hidden = true;
+        µ('#colorRange').hidden = false;
       } else {
-        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = false;
-        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = false;
+        µ('#colorInput').hidden = false;
+        µ('#colorRange').hidden = true;
       }
     };
 
