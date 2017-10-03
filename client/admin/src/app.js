@@ -77,7 +77,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       var cfg = {};
       cfg.mode = µ('[name="mode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
       cfg.color = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
-      cfg.range = { low: getNum(µ('#rangeStart') - 9), high: getNum(µ('#rangeEnd') - 9) };
+      cfg.range = { low: getNum(µ('#rangeStart')) - 9, high: getNum(µ('#rangeEnd')) - 9, mid: getNum(µ('#rangeMid')) - 9 };
       cfg.time = getNum(µ('#actTime'));
 
       if (cfg.range.high - cfg.range.low <= 0) {
@@ -86,7 +86,9 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       }
 
       if (µ('#rainbow').checked) {
-        cfg.color = rainbow(which - cfg.range.low, cfg.range.high - cfg.range.low);
+        var min = getNum(µ('#rbowMin'));
+        var max = getNum(µ('#rbowMax'));
+        cfg.color = rainbow(which - min, max - min);
         console.log(cfg.color);
       }
 
@@ -217,9 +219,11 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('#rainbow').onchange = ()=> {
       if (µ('#rainbow').checked) {
-        µ('#rCol').disabled = µ('#gCol').disabled = µ('#bCol').disabled = true;
+        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = true;
+        µ('#rbowMin').hidden = µ('#rbowMax').hidden = false;
       } else {
-        µ('#rCol').disabled = µ('#gCol').disabled = µ('#bCol').disabled = false;
+        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = false;
+        µ('#rCol').hidden = µ('#gCol').hidden = µ('#bCol').hidden = false;
       }
     };
 

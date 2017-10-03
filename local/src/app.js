@@ -95,7 +95,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(col), 50);
   };
 
-  var onThenFade = (scale, color)=> {
+  var onThenFade = (scale, color, time)=> {
     fadeVal = scale;
     fadeOut(color);
   };
