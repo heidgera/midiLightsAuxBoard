@@ -219,10 +219,10 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('#rainbow').onchange = ()=> {
       if (µ('#rainbow').checked) {
-        µ('#colorInput').hidden = true;
+        µ('#colorInputs').hidden = true;
         µ('#colorRange').hidden = false;
       } else {
-        µ('#colorInput').hidden = false;
+        µ('#colorInputs').hidden = false;
         µ('#colorRange').hidden = true;
       }
     };
