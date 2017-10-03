@@ -178,10 +178,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
       config.forEach(function (cfg, ind, arr) {
         cfg.color = new Color(cfg.color);
 
-        keyStyles.push(cfg);
+        keyStyles[i] = cfg;
       });
-
-      console.log(keyStyles);
     }
   });
 
