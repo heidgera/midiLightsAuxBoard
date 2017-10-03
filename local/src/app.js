@@ -114,7 +114,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
           var max = cfg.range.high;
           for (var i = min; i < max; i++) {
             if (cfg.rainbow) {
-              pixels.setByArray(i, rainbow(i - min, max - min).scale(s));
+              pixels.setByArray(i, rainbow(i - min, max - min));
             } else pixels.setByArray(i, cfg.color.scale(s));
           }
         }
