@@ -71,7 +71,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   var chords = [];
 
   chords.set = (set)=> {
-    chords.length = 0;
+    chords.splice(0, chords.length);
     set.forEach(function (chrd, ind, arr) {
       chords.push(new Chord(chrd.keys, chrd.config));
     });
@@ -110,8 +110,12 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
           holdColor[note] = s;
           pixels.setByArray(note, cfg.color.scale(s));
         } else if (cfg.range) {
-          for (var i = cfg.range.low; i < cfg.range.high; i++) {
-            pixels.setByArray(i, cfg.color.scale(s));
+          var min = cfg.range.low;
+          var max = cfg.range.high;
+          for (var i = min; i < max; i++) {
+            if (cfg.rainbow) {
+              pixels.setByArray(i, rainbow(i - min, max - min).scale(s));
+            } else pixels.setByArray(i, cfg.color.scale(s));
           }
         }
 
