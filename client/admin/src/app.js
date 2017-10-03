@@ -176,6 +176,8 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
         if (key.selected) {
           key.lightStyle = makeConfig(ind);
 
+          console.log(key.lightStyle);
+
           key.style.backgroundColor = key.lightStyle.color.styleString();
         }
       });
