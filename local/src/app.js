@@ -45,7 +45,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     var nextCheck = (pressed)=> {};
 
     this.launch = ()=> {
-      var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / (this.keys.length * 127);
+      var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / (this.keys.length * 127.);
       setLightsFromConfig(this.config, scale);
       if (this.config.mode = 'color') nextCheck = (pressed)=> {
         if (!pressed) {
@@ -105,6 +105,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     switch (cfg.mode) {
       case 'fade':
         if (s) onThenFade(s, cfg);
+        console.log('trying to fade');
         break;
       case 'color':
         if (note) {
