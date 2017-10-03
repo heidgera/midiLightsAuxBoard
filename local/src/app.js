@@ -261,7 +261,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
         chords.forEach((chrd, i)=>chrd.check(note, vel));
 
-        setLightsFromConfig(keyStyles[note], s, note);
+        setLightsFromConfig(keyStyles[note - 9], s, note - 9);
 
       }
     });
