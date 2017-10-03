@@ -176,11 +176,12 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     if (client === admin) {
       keyStyles = [];
       config.forEach(function (cfg, ind, arr) {
-        if (cfg.mode == 'fade') console.log(cfg);
         cfg.color = new Color(cfg.color);
 
         keyStyles.push(cfg);
       });
+
+      console.log(keyStyles);
     }
   });
 
