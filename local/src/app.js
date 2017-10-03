@@ -178,7 +178,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
       config.forEach(function (cfg, ind, arr) {
         cfg.color = new Color(cfg.color);
 
-        keyStyles[i] = cfg;
+        keyStyles[ind] = cfg;
       });
     }
   });
