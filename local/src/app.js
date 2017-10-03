@@ -98,7 +98,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         break;
       case 'color':
         if (note) {
-          holdColor[note] = vel;
+          holdColor[note] = s;
           pixels.setByArray(note, cfg.color.scale(s));
         } else if (cfg.range) {
           for (var i = cfg.range.low; i < cfg.range.high; i++) {
