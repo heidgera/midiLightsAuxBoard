@@ -93,6 +93,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       if (µ('#rainbow').checked) {
         var min = getNum(µ('#rbowMin'));
         var max = getNum(µ('#rbowMax'));
+        cfg.rbow = {};
         cfg.rbow.min = min;
         cfg.rbow.max = max;
         cfg.color = rainbow(which - min, max - min);
