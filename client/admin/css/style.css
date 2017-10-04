@@ -58,6 +58,10 @@ body {
 	background-color: #ccc;
 }
 
+.menuButton:active {
+	background-color: #777;
+}
+
 /*#read {
 	background-color: #7f7;
 }
