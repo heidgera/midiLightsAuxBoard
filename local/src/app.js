@@ -112,10 +112,10 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
           holdColor[note] = s;
           pixels.setByArray(note, cfg.color.scale(s));
         } else if (cfg.range) {
-          var min = cfg.rbow.min;
-          var max = cfg.rbow.max;
           for (var i = min; i < max; i++) {
             if (cfg.rainbow) {
+              var min = cfg.rbow.min;
+              var max = cfg.rbow.max;
               pixels.setByArray(i, rainbow(i - min, max - min));
             } else pixels.setByArray(i, cfg.color.scale(s));
           }
