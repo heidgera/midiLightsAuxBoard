@@ -77,11 +77,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       var cfg = {};
       cfg.mode = µ('[name="mode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
       cfg.color = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
-      cfg.range = {
-        low: getNum(µ('#rangeStart')) - mkOff,
-        high: getNum(µ('#rangeEnd')) - mkOff,
-        mid: getNum(µ('#rangeMid')) - mkOff,
-      };
+      cfg.range = { low: getNum(µ('#rangeStart')) - 9, high: getNum(µ('#rangeEnd')) - 9, mid: getNum(µ('#rangeMid')) - 9 };
       cfg.time = getNum(µ('#actTime'));
       cfg.rainbow = µ('#rainbow').checked;
 
@@ -93,9 +89,6 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       if (µ('#rainbow').checked) {
         var min = getNum(µ('#rbowMin'));
         var max = getNum(µ('#rbowMax'));
-        cfg.rbow = {};
-        cfg.rbow.min = min;
-        cfg.rbow.max = max;
         cfg.color = rainbow(which - min, max - min);
         console.log(cfg.color);
       }
@@ -165,6 +158,8 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
         chords.push(new Chord(sKeys, cfg));
       }
 
+      console.log(chords);
+
       keys.deselectAll();
 
       µ('#configurator').hidden = true;
@@ -182,8 +177,6 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       keys.forEach(function (key, ind, arr) {
         if (key.selected) {
           key.lightStyle = makeConfig(ind);
-
-          console.log(key.lightStyle);
 
           key.style.backgroundColor = key.lightStyle.color.styleString();
         }
