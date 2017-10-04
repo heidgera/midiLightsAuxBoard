@@ -88,7 +88,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     fadeVal -= .05;
     if (fadeVal <= 0) fadeVal = 0;
     pixels.setEachRGB(
-      (cur, ind)=>(holdColor[ind]) ? cur :
+      (cur, ind)=>(holdColor[ind] || ind < cfg.range.low || ind >= cfg.range.high) ? cur :
         ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
     );
     pixels.show();
