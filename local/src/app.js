@@ -18,7 +18,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   for (var i = 0; i < pixels.data.length; i++) {
     if (i < 48) keyStyles[i] = { mode: 'fade', color: new Color([127, 0, 0]), time: 1000 };
-    else keyStyles[i] = { mode: 'rainbow', start: 48, end: 80, color: rainbow(i - 48, 32) };
+    else keyStyles[i] = { mode: 'color', start: 48, end: 80, color: rainbow(i - 48, 32) };
+    keyStyles[i].range = { low: 9, high: 97 };
   }
 
   var admin = null;
