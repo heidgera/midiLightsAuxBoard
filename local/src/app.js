@@ -60,9 +60,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
       if (ind > -1) {
         keypresses[ind] = vel;
         clearTimeout(timer);
-        if (!fired && allPressed()) this.launch();
-        else if (vel && !fired) timer = setTimeout(reset, 250);
-        fired = allPressed();
+        if (allPressed()) this.launch();
+        else if (vel) timer = setTimeout(reset, 250);
         nextCheck();
       }
     };
