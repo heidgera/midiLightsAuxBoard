@@ -198,10 +198,10 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
     µ('#saveCloseSettings').onclick = (e)=> {
       e.preventDefault();
 
-      control.send({setMIDIDevice:{
+      control.send({ setMIDIDevice: {
         mode: 'input',
-        name: µ('#deviceDrop').value;
-      }});
+        name: µ('#deviceDrop').value,
+      }, });
 
       closeSettings();
     };
