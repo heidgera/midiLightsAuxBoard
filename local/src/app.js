@@ -93,7 +93,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
     );
     pixels.show();
-    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), time);
+    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg, time), time);
   };
 
   var onThenFade = (scale, cfg, time)=> {
