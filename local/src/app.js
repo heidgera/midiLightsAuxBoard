@@ -174,6 +174,21 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs)=
     }
   });
 
+  wss.addListener('setMIDIDevice', (request, data, client)=> {
+    if (client === admin) {
+      var mid = (request.mode == 'input') ? midi.in : midi.out;
+      var newIn = null;
+      console.log(`Looking for ${request.name}`);
+      mid.devices.forEach((el)=> {
+        if (el.name == request.name && !newIn) {
+          newIn = el;
+          console.log(`Connecting to ${request.name}`);
+        }
+      });
+      midi.in.select(newIn);
+    }
+  });
+
   wss.addListener('getConfiguration', (span, data, client)=> {
     if (client === admin) admin.sendPacket({
       keyConfig: keyStyles,
