@@ -56,8 +56,6 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     };
 
     this.check = (note, vel)=> {
-      console.log(note);
-      //note -= mkOff;
       var ind = this.keys.indexOf(note);
       if (ind > -1) {
         keypresses[ind] = vel;
@@ -261,7 +259,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         var s = vel / 127.;
         noteHeld[note] = vel;
 
-        chords.forEach((chrd, i)=>chrd.check(note - mkOff, vel));
+        chords.forEach((chrd, i)=>chrd.check(note, vel));
 
         setLightsFromConfig(keyStyles[note - mkOff], s, note - mkOff);
 
