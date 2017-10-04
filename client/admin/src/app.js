@@ -77,7 +77,11 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       var cfg = {};
       cfg.mode = µ('[name="mode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
       cfg.color = new Color([getNum(µ('#rCol')), getNum(µ('#gCol')), getNum(µ('#bCol'))]);
-      cfg.range = { low: getNum(µ('#rangeStart')) - 9, high: getNum(µ('#rangeEnd')) - 9, mid: getNum(µ('#rangeMid')) - 9 };
+      cfg.range = {
+        low: getNum(µ('#rangeStart')) - mkOff,
+        high: getNum(µ('#rangeEnd')) - mkOff,
+        mid: getNum(µ('#rangeMid')) - mkOff,
+      };
       cfg.time = getNum(µ('#actTime'));
       cfg.rainbow = µ('#rainbow').checked;
 
