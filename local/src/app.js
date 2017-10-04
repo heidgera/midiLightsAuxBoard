@@ -98,7 +98,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   var onThenFade = (scale, cfg, time)=> {
     fadeVal = scale;
-    fadeOut(cfg, 10 * time / (100 * scale));
+    fadeOut(cfg, time / (100 * scale));
   };
 
   var setLightsFromConfig = (cfg, s, note, range)=> {
