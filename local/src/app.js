@@ -83,9 +83,9 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
   var fadeTO = null;
 
-  var fadeOut = (cfg)=> {
+  var fadeOut = (cfg, time)=> {
     clearTimeout(fadeTO);
-    fadeVal -= .05;
+    fadeVal -= .01;
     if (fadeVal <= 0) fadeVal = 0;
     console.log(fadeVal);
     pixels.setEachRGB(
@@ -93,12 +93,12 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
     );
     pixels.show();
-    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), 50);
+    if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), time);
   };
 
   var onThenFade = (scale, cfg, time)=> {
     fadeVal = scale;
-    fadeOut(cfg);
+    fadeOut(cfg, time / (100 * scale));
   };
 
   var setLightsFromConfig = (cfg, s, note, range)=> {
