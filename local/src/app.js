@@ -105,7 +105,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     switch (cfg.mode) {
       case 'fade':
         if (s) onThenFade(s, cfg, cfg.time);
-        console.log('trying to fade');
+        console.log(`Fade time is ${cfg.time}`);
         break;
       case 'color':
         if (note) {
