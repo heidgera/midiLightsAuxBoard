@@ -47,8 +47,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     this.launch = ()=> {
       var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / (this.keys.length * 127.);
       setLightsFromConfig(this.config, scale);
-      if (this.config.mode = 'color') nextCheck = (pressed)=> {
-        if (!pressed) {
+      if (this.config.mode = 'color') nextCheck = ()=> {
+        if (!allPressed()) {
           setLightsFromConfig(this.config, 0);
           nextCheck = ()=> {};
         }
@@ -63,7 +63,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         if (!fired && allPressed()) this.launch();
         else if (vel && !fired) timer = setTimeout(reset, 250);
         fired = allPressed();
-        nextCheck(fired);
+        nextCheck();
       }
     };
   };
@@ -90,7 +90,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     if (fadeVal <= 0) fadeVal = 0;
     pixels.setEachRGB(
       (cur, ind)=>(holdColor[ind]) ? cur :
-        ((cfg.rainbow) ? rainbow(ind - cfg.range.low, cfg.range.high - cfg.range.low) : cfg.color).scale(fadeVal)
+        ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
     );
     pixels.show();
     if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), 50);
@@ -112,8 +112,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
           holdColor[note] = s;
           pixels.setByArray(note, cfg.color.scale(s));
         } else if (cfg.range) {
-          var min = cfg.range.low;
-          var max = cfg.range.high;
+          var min = cfg.rbow.min;
+          var max = cfg.rbow.max;
           for (var i = min; i < max; i++) {
             if (cfg.rainbow) {
               pixels.setByArray(i, rainbow(i - min, max - min));
@@ -248,7 +248,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     };*/
 
     midi.in.setNoteHandler((note, vel)=> {
-      if (note >= 9 && note < 97) {
+      if (note >= mkOff && note < mkOff + 88) {
         //note -= 9;
 
         //if (vel > 0) midi.out.playNote(note, 1);
@@ -261,7 +261,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
 
         chords.forEach((chrd, i)=>chrd.check(note, vel));
 
-        setLightsFromConfig(keyStyles[note - 9], s, note - 9);
+        setLightsFromConfig(keyStyles[note - mkOff], s, note - mkOff);
 
       }
     });
