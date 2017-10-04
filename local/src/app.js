@@ -56,8 +56,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     };
 
     this.check = (note, vel)=> {
-      console.log(this);
-      note -= mkOff;
+      //console.log(this);
+      //note -= mkOff;
       var ind = this.keys.indexOf(note);
       if (ind > -1) {
         keypresses[ind] = vel;
