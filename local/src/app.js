@@ -5,9 +5,10 @@ var obtains = [
   './src/neopixels.js',
   './src/server/express.js',
   './src/server/wsServer.js',
+  'fs',
 ];
 
-obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
+obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs)=> {
   exports.app = {};
 
   pixels.init(88);
@@ -69,6 +70,29 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   };
 
   var chords = [];
+
+  var conf = '/home/pi/.midiLight.json';
+  var chordConf = '/home/pi/.midiChords.json';
+
+  if (fs.existsSync(conf)) {
+    let data = fs.readFileSync(conf); //file exists, get the contents
+    var styles = JSON.parse(data);
+    keyStyles = [];
+    styles.forEach(function (style, ind, arr) {
+      style.color = new Color(style.color);
+
+      keyStyles[ind] = style;
+    });
+  }
+
+  if (fs.existsSync(chordConf)) {
+    let data = fs.readFileSync(chordConf); //file exists, get the contents
+    var chrds = JSON.parse(data);
+    chords = [];
+    chrds.forEach(function (chrd, ind, arr) {
+      chords.push(new Chord(chrd.keys, chrd.config));
+    });
+  }
 
   /*chords.set = (set)=> {
     chords.splice(0, chords.length);
@@ -170,7 +194,9 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
       clientChords.forEach(function (chrd, ind, arr) {
         chords.push(new Chord(chrd.keys, chrd.config));
       });
-    }//chords.set(clientChords);
+    }
+
+    fs.writeFileSync(chordConf, JSON.stringify(clientChords));
   });
 
   wss.addListener('setConfiguration', (config, data, client)=> {
@@ -182,6 +208,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
         keyStyles[ind] = cfg;
       });
     }
+
+    fs.writeFileSync(conf, JSON.stringify(config));
   });
 
   wss.addListener('adminSession', (password, data, client)=> {
