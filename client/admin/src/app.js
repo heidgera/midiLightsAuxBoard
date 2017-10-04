@@ -77,6 +77,15 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       });
     });
 
+    var closeSettings = ()=> {
+      µ('#settingsTab').hidden = true;
+    };
+
+    var closeConfig = ()=> {
+      keys.deselectAll();
+      µ('#configurator').hidden = true;
+    };
+
     var getNum = el => isNaN(parseInt(el.value)) ? 0 : parseInt(el.value);
 
     var makeConfig = (which)=> {
@@ -134,8 +143,19 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('#closeConfig').onclick = (e)=> {
       e.preventDefault();
-      keys.deselectAll();
-      µ('#configurator').hidden = true;
+      closeConfig();
+    };
+
+    µ('#closeSettings').onclick = (e)=> {
+      e.preventDefault();
+      //keys.deselectAll();
+      µ('#settingsTab').hidden = true;
+    };
+
+    µ('#cancelSettings').onclick = (e)=> {
+      e.preventDefault();
+      //keys.deselectAll();
+      closeSettings();
     };
 
     µ('#chords').onchange = ()=> {
@@ -154,9 +174,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
         chords.splice(currentChord, 1);
       }
 
-      keys.deselectAll();
-
-      µ('#configurator').hidden = true;
+      closeConfig();
     };
 
     µ('#saveChord').onclick = (e)=> {
@@ -174,15 +192,18 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
       console.log(chords);
 
-      keys.deselectAll();
-
-      µ('#configurator').hidden = true;
+      closeConfig();
     };
 
-    µ('#saveClose').onclick = (e)=> {
+    µ('#saveCloseSettings').onclick = (e)=> {
       e.preventDefault();
-      keys.deselectAll();
-      µ('#configurator').hidden = true;
+
+      control.send({setMIDIDevice:{
+        mode: 'input',
+        name: µ('#deviceDrop').value;
+      }});
+
+      closeSettings();
     };
 
     µ('#saveClose').onclick = (e)=> {
@@ -196,9 +217,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
         }
       });
 
-      keys.deselectAll();
-
-      µ('#configurator').hidden = true;
+      closeConfig();
     };
 
     keys.onSelect = (which)=> {
