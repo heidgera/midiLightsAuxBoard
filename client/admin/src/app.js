@@ -47,7 +47,13 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
     });
 
     control.addListener('listMIDI', (reply)=> {
-      console.log(reply.devices);
+      var drop = µ('#deviceDrop');
+      drop.innerHTML = '';
+      reply.devices.forEach(function (device, ind, arr) {
+        let newOpt = µ('+option', drop);
+        newOpt.value = device;
+        newOpt.textContent = device;
+      });
     });
 
     control.addListener('serverChords', (servChrd)=> {
@@ -116,6 +122,9 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
     µ('#settings').onclick = (e)=> {
       e.preventDefault();
       control.send({ requestMIDIDevices: 'input' });
+
+      keys.deselectAll();
+      µ('#settingsTab').hidden = false;
     };
 
     µ('#selectAll').onclick = (e)=> {

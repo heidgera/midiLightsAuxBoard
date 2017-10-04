@@ -116,7 +116,7 @@ body {
 	margin-left: calc(-1 * var(--key-width) / 3);
 }
 
-.optWindow {
+#configurator {
 	position: fixed;
 	box-sizing: border-box;
 	--config-hgt:calc(90vh - (var(--menu-hgt) + 10vw + var(--key-width) * 4.66) );
@@ -162,14 +162,14 @@ body {
 	background-color: #ccc;
 }
 
-.options {
+#options {
 	--opt-hgt:calc(var(--config-hgt) - var(--menu-hgt) - 10vw);
 	height: var(--opt-hgt);
 	--mode-hgt: calc(var(--opt-hgt) - 5vh);
 	--mode-wid: 20vw;
 }
 
-.leftOpts {
+#modeSelect {
 	position: absolute;
 	display: inline-block;
 	top: calc(var(--menu-hgt) + 5vh);
@@ -226,7 +226,7 @@ body {
 	float:right;
 }
 
-.outputOpts {
+#outputOpts {
 	position: absolute;
 	width: 95%;
 	bottom: 5vh;

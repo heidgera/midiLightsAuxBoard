@@ -26,8 +26,8 @@
         </select>
         <span>or Select Chord to Edit:</span>
       </div>
-      <div id='options'>
-        <form id='modeSelect'>
+      <div class='options'>
+        <form class="leftOpts">
           <p>Select Mode</p><br>
           <!-- <input type="radio" name="mode" value="rainbow"><span>Rainbow</span><br> -->
           <input type="radio" name="mode" value="color"><span>Color</span><br>
@@ -57,12 +57,31 @@
           <div>Time:</div>
           <span>Total time (milliseconds): <input type='text' id='actTime'></span><br><br>
         </div>
-        <div id='outputOpts'>
+        <div class='outputOpts'>
           <span class='menuButton' id='saveClose'>Save and Close</span>
           <span class='menuButton' id='cancel'>Cancel</span>
           <span class='menuButton' id='saveChord'>Save as Chord</span>
           <span class='menuButton' id='deleteChord'>Delete Chord</span>
         </div>
+      </div>
+    </div>
+    <div id='settingsTab' class='optWindow' hidden>
+      <div class='configTitle'>Settings
+        <span class='close' id='closeSettings'>X</span>
+      </div>
+      <div class='options'>
+        <div class="leftOpts">
+          <p>Select Mode</p><br>
+          <!-- <input type="radio" name="mode" value="rainbow"><span>Rainbow</span><br> -->
+          <select id='deviceDrop'>
+            <option>No Devices Present</span>
+          </select>
+        </div>
+
+      </div>
+      <div class='outputOpts'>
+        <span class='menuButton' id='saveCloseSettings'>Save and Close</span>
+        <span class='menuButton' id='cancelSettings'>Cancel</span>
       </div>
     </div>
   </body>
