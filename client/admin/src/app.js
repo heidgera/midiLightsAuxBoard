@@ -81,6 +81,8 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       cfg.time = getNum(µ('#actTime'));
       cfg.rainbow = µ('#rainbow').checked;
 
+      if (!cfg.time) cfg.time = 1000;
+
       if (cfg.range.high - cfg.range.low <= 0) {
         cfg.range.high = 87;
         cfg.range.low = 0;

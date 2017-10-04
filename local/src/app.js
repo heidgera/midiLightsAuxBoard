@@ -104,7 +104,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
   var setLightsFromConfig = (cfg, s, note, range)=> {
     switch (cfg.mode) {
       case 'fade':
-        if (s) onThenFade(s, cfg);
+        if (s) onThenFade(s, cfg, cfg.time);
         console.log('trying to fade');
         break;
       case 'color':
