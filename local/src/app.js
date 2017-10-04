@@ -6,12 +6,17 @@ var obtains = [
   './src/server/express.js',
   './src/server/wsServer.js',
   'fs',
+  'child_process',
 ];
 
-obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs)=> {
+obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, { exec })=> {
   exports.app = {};
 
   pixels.init(88);
+
+  fileServer.get('/shutdown', ()=> {
+    exec('sudo shutdown now');
+  });
 
   var mkOff = 9; //Piano keyboards start at midi 9
 
