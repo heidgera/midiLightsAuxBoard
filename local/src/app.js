@@ -90,7 +90,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     console.log(fadeVal);
     pixels.setEachRGB(
       (cur, ind)=>(holdColor[ind] || ind < cfg.range.low || ind >= cfg.range.high) ? cur :
-        ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
+        ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(Math.ceil(fadeVal))
     );
     pixels.show();
     if (fadeVal > 0) fadeTO = setTimeout(()=>fadeOut(cfg), 50);
