@@ -47,7 +47,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss })=> {
     this.launch = ()=> {
       var scale = this.keys.reduce((acc, v, i)=>acc + keypresses[i], 0) / (this.keys.length * 127.);
       setLightsFromConfig(this.config, scale);
-      if (this.config.mode = 'color') nextCheck = ()=> {
+      if (this.config.mode == 'color') nextCheck = ()=> {
         if (!allPressed()) {
           setLightsFromConfig(this.config, 0);
           nextCheck = ()=> {};
