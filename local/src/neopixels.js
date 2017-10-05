@@ -12,11 +12,10 @@ obtain(['µ/color.js', 'rpi-ws281x-native'], ({ rainbow, Color }, ws2812)=> {//'
       ws2812.render(this.data);
     },
 
-
-    setIndicator: function(color){
+    setIndicator: function (color) {
       _this.data[0] = this.color.apply(null, color);
       this.show();
-    }
+    },
 
     set: function (num, r, g, b) {
       this.data[num + 1] = this.color(r, g, b);
@@ -47,7 +46,7 @@ obtain(['µ/color.js', 'rpi-ws281x-native'], ({ rainbow, Color }, ws2812)=> {//'
       _this.data = new Uint32Array(numLEDs + 1);
       ws2812.init(numLEDs + 1);
 
-      this.setIndicator([0,127,0]);
+      this.setIndicator([0, 127, 0]);
     },
 
     reset: ws2812.reset,
