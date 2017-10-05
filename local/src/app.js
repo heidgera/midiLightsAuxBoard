@@ -15,7 +15,10 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
   pixels.init(88);
 
   fileServer.get('/shutdown', ()=> {
-    exec('sudo shutdown now');
+    pixels.setIndicator([127, 0, 0]);
+    setTimeout(()=> {
+      exec('sudo shutdown now');
+    }, 500);
   });
 
   var mkOff = 9; //Piano keyboards start at midi 9
