@@ -13,7 +13,7 @@ obtain(['µ/color.js', 'rpi-ws281x-native'], ({ rainbow, Color }, ws2812)=> {//'
     },
 
     setIndicator: function (color) {
-      _this.data[0] = this.color.apply(null, color);
+      this.data[0] = this.color.apply(null, color);
       this.show();
     },
 
