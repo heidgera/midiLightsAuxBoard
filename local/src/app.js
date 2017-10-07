@@ -84,6 +84,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
   var conf = require('os').homedir() + '/.midiLight.json';
 
   var configDir = require('os').homedir() + '/midiLightConfigs';
+  var settingsDir = require('os').homedir() + '/midiLightSettings';
 
   var defaultConf = configDir + 'default.json';
 
@@ -126,6 +127,50 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     fadeOut(cfg, time / (100 * scale));
   };
 
+  var pulseTimer = null;
+
+  var doPulse = (which, counter, cfg, time)=> {
+    var color = ()=>cfg.color;
+    counter += 1;
+    var half = Math.abs(cfg.range.high - which);
+    var dir = (cfg.range.high - which) > 0;
+    if (cfg.rainbow) color = (ind)=>rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min);
+    var chaseUp = (cur, ind)=> {
+      if (counter < half && ind >= which && ind < which + counter) return color(ind);
+      else if (ind >= which + (counter - half) && ind < cfg.range.high) return color(ind);
+      return null;
+    };
+
+    var chaseDown = (cur, ind)=> {
+      if (counter < half && ind < which && ind >= which - counter) return color(ind);
+      else if (ind < which - (counter - half) && ind >= cfg.range.high) return color(ind);
+      return null;
+    };
+
+    var colorChain = (cur, ind)=> {
+      var ret = null;
+      if (cfg.bothDirs) {
+        ret = chaseUp(cur, ind);
+        if (!ret) ret = chaseDown(cur, ind);
+      } else if (dir) ret = chaseUp(cur, ind);
+      else ret = chaseDown(cur, ind);
+      if (!ret) ret = cur;
+      return ret;
+    };
+
+    pixels.setEachRGB(colorChain);
+    pixels.show();
+    if (counters < 2 * half) setTimeout(()=> {
+      doPulse(which, counter, cfg, time);
+    }, time);
+  };
+
+  var startPulse = (which, cfg)=> {
+    if (which == null) which  = cfg.range.mid;
+    var tm = cfg.time / (2 * Math.abs(cfg.range.high - which));
+    doPulse(which, 0, cfg, tm);
+  };
+
   var setLightsFromConfig = (cfg, s, note, range)=> {
     switch (cfg.mode) {
       case 'fade':
@@ -149,7 +194,6 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         break;
       case 'pulse':
 
-        //code for pulse
         break;
       default:
 
@@ -203,6 +247,12 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         }
       });
       midi.in.select(newIn);
+
+      if (!fs.existsSync(settingsDir)) {
+        fs.mkdirSync(settingsDir);
+      }
+
+      fs.writeFileSync(settingsDir + '/MIDI_Device.json', JSON.stringify(request));
     }
   });
 
@@ -326,6 +376,21 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         }
       });
       midi.in.select(newIn);
+
+      if (fs.existsSync(settingsDir + '/MIDI_Device.json')) {
+        let data = fs.readFileSync(settingsDir + '/MIDI_Device.json'); //file exists, get the contents
+        var request = JSON.parse(data);
+        var mid = (request.mode == 'input') ? midi.in : midi.out;
+        var newIn = null;
+        console.log(`Looking for ${request.name}`);
+        mid.devices.forEach((el)=> {
+          if (el.name == request.name && !newIn) {
+            newIn = el;
+            console.log(`Connecting to ${request.name}`);
+          }
+        });
+        midi.in.select(newIn);
+      }
     };
 
     /*midi.out.onReady = ()=> {

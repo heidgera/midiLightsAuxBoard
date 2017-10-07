@@ -110,6 +110,7 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
       cfg.range = { low: getNum(µ('#rangeStart')) - 9, high: getNum(µ('#rangeEnd')) - 9, mid: getNum(µ('#rangeMid')) - 9 };
       cfg.time = getNum(µ('#actTime'));
       cfg.rainbow = µ('#rainbow').checked;
+      cfg.bothDirs = µ('#double').checked;
 
       if (!cfg.time) cfg.time = 1000;
 
@@ -321,6 +322,16 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
     µ('#rCol').onblur = makeSampleColor;
     µ('#gCol').onblur = makeSampleColor;
     µ('#bCol').onblur = makeSampleColor;
+
+    µ('[name="mode"]').forEach((radio)=> {
+      radio.onchange = ()=> {
+        if (radio.value == 'pulse' && radio.checked) {
+          µ('#pulseDir').hidden = false;
+        } else {
+          µ('#pulseDir').hidden = true;
+        }
+      };
+    });
 
     µ('#rainbow').onchange = ()=> {
       if (µ('#rainbow').checked) {

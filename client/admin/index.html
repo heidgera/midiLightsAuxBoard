@@ -32,7 +32,7 @@
           <!-- <input type="radio" name="mode" value="rainbow"><span>Rainbow</span><br> -->
           <input type="radio" name="mode" value="color" checked><span>Color</span><br>
           <input type="radio" name="mode" value="fade"><span>Fade</span><br>
-          <input type="radio" name="mode" value="pulse"><span>Pulse</span>
+          <input type="radio" name="mode" value="pulse" id='pulseRadio'><span>Pulse</span>
         </form>
         <div id='globalOpts'>
           <p>Specify Options</p>
@@ -54,7 +54,11 @@
             <div>Range:</div>
             <span>Low: <input type='text' id='rangeStart' value='9'></span>
             <span>Mid: <input type='text' id='rangeMid' value='44'></span>
-            <span>High: <input type='text' id='rangeEnd' value='96'></span><br><br>
+            <span>High: <input type='text' id='rangeEnd' value='96'></span>
+            <span id='pulseDir' hidden>
+              <input id="double" type="checkbox">
+              <span>Both directions</span>
+            </span><br><br>
             <div>Time:</div>
             <span>Total time (milliseconds): <input type='text' id='actTime'></span>
           </div>
