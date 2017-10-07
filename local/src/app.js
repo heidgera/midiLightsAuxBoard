@@ -193,7 +193,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         pixels.show();
         break;
       case 'pulse':
-
+        startPulse(note, cfg);
         break;
       default:
 
