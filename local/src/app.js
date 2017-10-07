@@ -21,6 +21,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     }, 500);
   });
 
+  var openedFile = null;
+
   var mkOff = 9; //Piano keyboards start at midi 9
 
   var keyStyles = [];
@@ -79,36 +81,27 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
 
   var chords = [];
 
-  var conf = '/home/pi/.midiLight.json';
-  var chordConf = '/home/pi/.midiChords.json';
+  var conf = require('os').homedir() + '/.midiLight.json';
+
+  var configDir = require('os').homedir() + '/midiLightConfigs';
+
+  var defaultConf = configDir + 'default.json';
 
   if (fs.existsSync(conf)) {
     let data = fs.readFileSync(conf); //file exists, get the contents
     var styles = JSON.parse(data);
     keyStyles = [];
-    styles.forEach(function (style, ind, arr) {
+    styles.keys.forEach(function (style, ind, arr) {
       style.color = new Color(style.color);
 
       keyStyles[ind] = style;
     });
-  }
 
-  if (fs.existsSync(chordConf)) {
-    let data = fs.readFileSync(chordConf); //file exists, get the contents
-    var chrds = JSON.parse(data);
     chords = [];
-    chrds.forEach(function (chrd, ind, arr) {
+    styles.chords.forEach(function (chrd, ind, arr) {
       chords.push(new Chord(chrd.keys, chrd.config));
     });
   }
-
-  /*chords.set = (set)=> {
-    chords.splice(0, chords.length);
-    set.forEach(function (chrd, ind, arr) {
-      chords.push(new Chord(chrd.keys, chrd.config));
-    });
-
-  };*/
 
   var holdColor = [];
 
@@ -170,6 +163,22 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     }
   });
 
+  wss.addListener('listConfigs', (dataSet, data, client)=> {
+    fs.readdir(configDir, (err, files) => {
+      console.log(files);
+      client.sendPacket({ listConfigs: files.map((file)=>file.replace('.json', '')) });
+      if (openedFile) client.sendPacket({ currentConfig: openedFile });
+    });
+  });
+
+  wss.addListener('deleteConfig', (which, data, client)=> {
+    if (client === admin) {
+      fs.unlink(configDir + '/' + which + '.json', (err, files) => {
+        console.log('Deleted ' + which);
+      });
+    }
+  });
+
   wss.addListener('requestMIDIDevices', (request, data, client)=> {
     if (client === admin) {
       var mid = (request == 'input') ? midi.in : midi.out;
@@ -197,40 +206,73 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     }
   });
 
-  wss.addListener('getConfiguration', (span, data, client)=> {
-    if (client === admin) admin.sendPacket({
+  wss.addListener('getConfiguration', (which, data, client)=> {
+    //if (client === admin){
+    if (which == 'current') admin.sendPacket({
       keyConfig: keyStyles,
-    });
-  });
-
-  wss.addListener('getChords', (reply, data, client)=> {
-    if (client === admin) admin.sendPacket({
       serverChords: chords,
     });
-  });
-
-  wss.addListener('setChords', (clientChords, data, client)=> {
-    if (client === admin) {
-      chords = [];
-      clientChords.forEach(function (chrd, ind, arr) {
-        chords.push(new Chord(chrd.keys, chrd.config));
+    else {
+      let data = fs.readFileSync(configDir + '/' + which + '.json'); //file exists, get the contents
+      var styles = JSON.parse(data);
+      admin.sendPacket({
+        keyConfig: styles.keys,
+        serverChords: styles.chords,
       });
     }
+    //}
+  });
 
-    fs.writeFileSync(chordConf, JSON.stringify(clientChords));
+  wss.addListener('setConfigByName', (name, dataPack, client)=> {
+    openedFile = name;
+    let data = fs.readFileSync(configDir + '/' + name + '.json'); //file exists, get the contents
+    var styles = JSON.parse(data);
+    keyStyles = [];
+    styles.keys.forEach(function (cfg, ind, arr) {
+      cfg.color = new Color(cfg.color);
+
+      keyStyles[ind] = cfg;
+    });
+
+    chords = [];
+    styles.chords.forEach(function (chrd, ind, arr) {
+      chords.push(new Chord(chrd.keys, chrd.config));
+    });
+
+    console.log('Opened ' + openedFile);
+
+    wss.broadcast({ currentConfig: openedFile });
   });
 
   wss.addListener('setConfiguration', (config, data, client)=> {
     if (client === admin) {
-      keyStyles = [];
-      config.forEach(function (cfg, ind, arr) {
-        cfg.color = new Color(cfg.color);
+      if (config.load) {
+        keyStyles = [];
+        config.keys.forEach(function (cfg, ind, arr) {
+          cfg.color = new Color(cfg.color);
 
-        keyStyles[ind] = cfg;
-      });
+          keyStyles[ind] = cfg;
+        });
+
+        chords = [];
+        config.chords.forEach(function (chrd, ind, arr) {
+          chords.push(new Chord(chrd.keys, chrd.config));
+        });
+
+        openedFile = config.filename;
+
+        wss.broadcast({ currentConfig: openedFile });
+      }
+
+      if (!fs.existsSync(configDir)) {
+        fs.mkdirSync(configDir);
+      }
+
+      let file = configDir + '/' + config.filename + '.json';
+      console.log(file);
+
+      fs.writeFileSync(file, JSON.stringify({ keys: keyStyles, chords: chords }));
     }
-
-    fs.writeFileSync(conf, JSON.stringify(config));
   });
 
   wss.addListener('adminSession', (password, data, client)=> {

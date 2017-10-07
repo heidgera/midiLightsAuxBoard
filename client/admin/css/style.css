@@ -79,8 +79,8 @@ body {
 	top: var(--menu-hgt);
 	left: 0;
 	width: 100vw;
-	height: calc(5vw + var(--key-width) * 4.66 );
-	padding-top: 5vw;
+	height: calc(2vw + var(--key-width) * 4.66 );
+	padding-top: 2vw;
 	vertical-align: text-top;
 	background-color: #222;
 	border-bottom: 2px solid #111;
@@ -119,8 +119,8 @@ body {
 .optWindow {
 	position: fixed;
 	box-sizing: border-box;
-	--config-hgt:calc(90vh - (var(--menu-hgt) + 10vw + var(--key-width) * 4.66) );
-	top: calc(5vh + var(--menu-hgt) + 10vw + var(--key-width) * 4.66 );
+	--config-hgt:calc(90vh - (var(--menu-hgt) + 4vw + var(--key-width) * 4.66) );
+	top: calc(5vh + var(--menu-hgt) + 4vw + var(--key-width) * 4.66 );
 	left: 5vw;
 	width: 90vw;
 	height: var(--config-hgt);
@@ -165,15 +165,20 @@ body {
 .options {
 	--opt-hgt:calc(var(--config-hgt) - var(--menu-hgt) - 10vw);
 	height: var(--opt-hgt);
+	vertical-align: top;
 	--mode-hgt: calc(var(--opt-hgt) - 5vh);
 	--mode-wid: 20vw;
 }
 
+.options > * {
+	vertical-align: top;
+}
+
 .leftOpts {
-	position: absolute;
+	position: relative;
 	display: inline-block;
-	top: calc(var(--menu-hgt) + 5vh);
-	left: 5vw;
+	/*top: calc(var(--menu-hgt) + 5vh);
+	left: 5vw;*/
 	height: var(--mode-hgt);
 	width: var(--mode-wid);
 	border-right: 1px solid black;
@@ -188,23 +193,30 @@ body {
 }
 
 #globalOpts {
-	position: absolute;
+	position: relative;
 	display: inline-block;
-	margin-left: 2vw;
+	padding-left: 2vw;
+	box-sizing: border-box;
+	/*margin-left: 2vw;
 	top: calc(var(--menu-hgt) + 5vh);
-	left: calc(var(--mode-wid) + 5vw);
+	left: calc(var(--mode-wid) + 5vw);*/
 	height: var(--mode-hgt);
-	width: 60vw;
+	width: calc(100% - var(--mode-wid) - 2vw);
 }
 
 #globalOpts > span {
 	font-size: .7em;
 }
 
-#globalOpts > div {
+.opts > div {
 	font-size: 1em;
 	margin-bottom: 2vh;
 	border-bottom: 1px solid black;
+}
+
+.opts {
+	height: 100%;
+	overflow-y:auto;
 }
 
 #sampleColor{
@@ -230,4 +242,43 @@ body {
 	position: absolute;
 	width: 95%;
 	bottom: 5vh;
+}
+
+.dim {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100vw;
+	background-color: rgba(0,0,0,.5);
+}
+
+.dialog {
+	position: absolute;
+	max-width: 75vw;
+	max-height: 75vh;
+	height: 50vh;
+	width: 50vw;
+	box-sizing: border-box;
+	border: 2px solid black;
+	border-radius: 5px;
+	background-color: #555;
+	padding: 3vw;
+	--menu-hgt: 5vh;
+}
+
+.dialog .configTitle {
+	font-size: 1.5em;
+}
+
+.centered {
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.dialogOptions{
+	margin-top: 5vh;
 }

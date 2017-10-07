@@ -23,6 +23,8 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     var currentChord = -1;
 
+    var openedFile = null;
+
     keys.forEach(function (key, ind, arr) {
       if (key.midiNum < 48) key.lightStyle = { mode: 'fade', color: new Color([127, 0, 0]) };
       else key.lightStyle = { mode: 'rainbow', start: 48, end: 80 };
@@ -53,6 +55,19 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
         let newOpt = µ('+option', drop);
         newOpt.value = device;
         newOpt.textContent = device;
+      });
+    });
+
+    control.addListener('listConfigs', (configs)=> {
+      var confg = µ('#configFiles');
+      var del = µ('#deleteFiles');
+      confg.innerHTML = '';
+      del.innerHTML = '';
+      configs.forEach(function (conf, ind, arr) {
+        let newOpt = µ('+option', confg);
+        let delOpt = µ('+option', del);
+        delOpt.value = newOpt.value = conf;
+        delOpt.textContent = newOpt.textContent = conf;
       });
     });
 
@@ -118,14 +133,68 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('#read').onclick = (e)=> {
       e.preventDefault();
-      control.send({ getConfiguration: { low: 0, high: 88 } });
-      control.send({ getChords: true });
+      //control.send({ getConfiguration: 'default' });
+      control.send({ listConfigs: true });
+      µ('#readDialog').hidden = false;
+    };
+
+    µ('#okayRead').onclick = (e)=> {
+      e.preventDefault();
+      let which = µ('[name="readMode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
+      if (which == 'default' || which == 'open') {
+        openedFile = (which == 'default') ? 'current' : µ('#configFiles').value;
+        control.send({ getConfiguration: openedFile });
+      } else if (which == 'delete') {
+        control.send({ deleteConfig: µ('#deleteFiles').value });
+      }
+
+      µ('#readDialog').hidden = true;
+    };
+
+    µ('#cancelRead').onclick = (e)=> {
+      e.preventDefault();
+      µ('#readDialog').hidden = true;
     };
 
     µ('#write').onclick = (e)=> {
       e.preventDefault();
-      control.send({ setConfiguration: keys.map(key=>key.lightStyle) });
-      control.send({ setChords: chords });
+      µ('#writeDialog').hidden = false;
+      if (openedFile) {
+        µ('#replaceOpt').hidden = false;
+        µ('#openedFile').textContent = openedFile;
+      }
+    };
+
+    µ('#writeConfig').onclick = (e)=> {
+      e.preventDefault();
+      µ('#writeDialog').hidden = true;
+      let which = µ('[name="writeMode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
+      let name = (which == 'save') ? openedFile : ((which == 'saveAs') ? µ('#writeFile').value : which);
+      control.send({ setConfiguration: {
+        keys: keys.map(key=>key.lightStyle),
+        chords: chords,
+        filename: name,
+        load: false,
+      }, });
+    };
+
+    µ('#writeLoadConfig').onclick = (e)=> {
+      e.preventDefault();
+      µ('#writeDialog').hidden = true;
+      let which = µ('[name="writeMode"]').reduce((acc, val)=>(val.checked ? val.value : acc), null);
+      let name = (which == 'save') ? openedFile : ((which == 'saveAs') ? µ('#writeFile').value : which);
+      console.log(name);
+      control.send({ setConfiguration: {
+        keys: keys.map(key=>key.lightStyle),
+        chords: chords,
+        filename: name,
+        load: true,
+      }, });
+    };
+
+    µ('#cancelWrite').onclick = (e)=> {
+      e.preventDefault();
+      µ('#writeDialog').hidden = true;
     };
 
     µ('#settings').onclick = (e)=> {

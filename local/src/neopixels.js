@@ -1,4 +1,6 @@
-obtain(['µ/color.js', 'rpi-ws281x-native'], ({ rainbow, Color }, ws2812)=> {//'rpi-ws281x-native'
+var ws2812 = { render: ()=> {}, init: ()=> {}, reset: ()=> {} };
+
+obtain(['µ/color.js'], ({ rainbow, Color })=> {//'rpi-ws281x-native'
 
   exports.Color = Color;
 
