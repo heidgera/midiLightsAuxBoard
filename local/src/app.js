@@ -154,13 +154,15 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         if (!ret) ret = chaseDown(cur, ind);
       } else if (dir) ret = chaseUp(cur, ind);
       else ret = chaseDown(cur, ind);
-      if (!ret) ret = cur;
+      if (!ret && holdColor[ind]) ret = cur;
+      else ret = new Color([0, 0, 0]);
       return ret;
     };
 
     pixels.setEachRGB(colorChain);
     pixels.show();
-    if (counters < 2 * half) setTimeout(()=> {
+    if (counter < 2 * half) setTimeout(()=> {
+      console.log(counter);
       doPulse(which, counter, cfg, time);
     }, time);
   };
