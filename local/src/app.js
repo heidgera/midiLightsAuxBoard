@@ -155,9 +155,9 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
       } else if (dir) ret = chaseUp(cur, ind);
       else ret = chaseDown(cur, ind);
       if (!ret && holdColor[ind]) ret = cur;
-      else ret = new Color([0, 0, 0]);
-      console.log(`----------------${ind}--------------`);
-      console.log(ret);
+      else if (!ret) ret = new Color([0, 0, 0]);
+      //console.log(`----------------${ind}--------------`);
+      //console.log(ret);
       return ret;
     };
 
@@ -196,7 +196,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         pixels.show();
         break;
       case 'pulse':
-        startPulse(note, cfg);
+        if (s) startPulse(note, cfg);
         break;
       default:
 
