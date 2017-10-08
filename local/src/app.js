@@ -176,6 +176,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
   };
 
   var setLightsFromConfig = (cfg, s, note, range)=> {
+    console.log(cfg.mode);
     switch (cfg.mode) {
       case 'fade':
         if (s) onThenFade(s, cfg, cfg.time);
@@ -418,7 +419,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
         //if (vel > 0) midi.out.playNote(note, 1);
         //if (vel == 0) midi.out.playNote(note, 0);
 
-        if (admin) admin.sendPacket({ notePressed: { note: note, vel: vel } });
+        //if (admin) admin.sendPacket({ notePressed: { note: note, vel: vel } });
+        wss.broadcast({ notePressed: { note: note, vel: vel } });
 
         var s = vel / 127.;
         noteHeld[note] = vel;
