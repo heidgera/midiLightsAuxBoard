@@ -137,13 +137,13 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     if (cfg.rainbow) color = (ind)=>rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min);
     var chaseUp = (cur, ind)=> {
       if (counter < half && ind >= which && ind < which + counter) return color(ind);
-      else if (ind >= which + (counter - half) && ind < which + cfg.range.dist) return color(ind);
+      else if (counter >= half && ind >= which + (counter - half) && ind < which + cfg.range.dist) return color(ind);
       return null;
     };
 
     var chaseDown = (cur, ind)=> {
       if (counter < half && ind < which && ind >= which - counter) return color(ind);
-      else if (ind < which - (counter - half) && ind >= which - cfg.range.dist) return color(ind);
+      else if (counter >= half && ind < which - (counter - half) && ind >= which - cfg.range.dist) return color(ind);
       return null;
     };
 
