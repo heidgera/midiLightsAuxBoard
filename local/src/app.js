@@ -115,7 +115,7 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     fadeVal -= .01;
     if (fadeVal <= 0) fadeVal = 0;
     pixels.setEachRGB(
-      (cur, ind)=>(holdColor[ind] || ind < cfg.range.low || ind >= cfg.range.high) ? cur :
+      (cur, ind)=>(holdColor[ind] || ind < cfg.range.start || ind >= cfg.range.start + cfg.range.dist) ? cur :
         ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
     );
     pixels.show();
@@ -132,18 +132,18 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
   var doPulse = (which, counter, cfg, time)=> {
     var color = ()=>cfg.color;
     counter += 1;
-    var half = Math.abs(cfg.range.high - which);
-    var dir = (cfg.range.high - which) > 0;
+    var half = Math.abs(cfg.range.dist);
+    var dir = cfg.range.dist > 0;
     if (cfg.rainbow) color = (ind)=>rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min);
     var chaseUp = (cur, ind)=> {
       if (counter < half && ind >= which && ind < which + counter) return color(ind);
-      else if (ind >= which + (counter - half) && ind < cfg.range.high) return color(ind);
+      else if (ind >= which + (counter - half) && ind < which + cfg.range.dist) return color(ind);
       return null;
     };
 
     var chaseDown = (cur, ind)=> {
       if (counter < half && ind < which && ind >= which - counter) return color(ind);
-      else if (ind < which - (counter - half) && ind >= cfg.range.high) return color(ind);
+      else if (ind < which - (counter - half) && ind >= which - cfg.range.dist) return color(ind);
       return null;
     };
 
@@ -156,8 +156,6 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
       else ret = chaseDown(cur, ind);
       if (!ret && holdColor[ind]) ret = cur;
       else if (!ret) ret = new Color([0, 0, 0]);
-      //console.log(`----------------${ind}--------------`);
-      //console.log(ret);
       return ret;
     };
 
@@ -169,8 +167,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
   };
 
   var startPulse = (which, cfg)=> {
-    if (which == null) which  = cfg.range.mid;
-    var tm = cfg.time / (2 * Math.abs(cfg.range.high - which));
+    if (which == null) which  = cfg.range.start;
+    var tm = cfg.time / (2 * Math.abs(cfg.range.dist));
     doPulse(which, 0, cfg, tm);
   };
 
@@ -184,11 +182,14 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
           holdColor[note] = s;
           pixels.setByArray(note, cfg.color.scale(s));
         } else if (cfg.range) {
-          for (var i = min; i < max; i++) {
+          var low = cfg.range.start;
+          var high = cfg.range.start + cfg.range.dist;
+          if (cfg.bothDirs) low = cfg.range.start - cfg.range.dist;
+          for (var i = low; i < high; i++) {
             if (cfg.rainbow) {
               var min = cfg.rbow.min;
               var max = cfg.rbow.max;
-              pixels.setByArray(i, rainbow(i - min, max - min));
+              pixels.setByArray(i, rainbow(i - min, max - min).scale(s));
             } else pixels.setByArray(i, cfg.color.scale(s));
           }
         }
