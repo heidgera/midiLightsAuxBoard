@@ -114,6 +114,9 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
     clearTimeout(fadeTO);
     fadeVal -= .01;
     if (fadeVal <= 0) fadeVal = 0;
+    var start = cfg.range.start;
+    var end = cfg.range.start + cfg.range.dist;
+    if (cfg.bothDirs) start = cfg.range.start - cfg.range.dist;
     pixels.setEachRGB(
       (cur, ind)=>(holdColor[ind] || ind < cfg.range.start || ind >= cfg.range.start + cfg.range.dist) ? cur :
         ((cfg.rainbow) ? rainbow(ind - cfg.rbow.min, cfg.rbow.max - cfg.rbow.min) : cfg.color).scale(fadeVal)
