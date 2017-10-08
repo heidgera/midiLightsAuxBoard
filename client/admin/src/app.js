@@ -320,11 +320,11 @@ obtain(['µ/commandClient.js', 'µ/color.js', './src/keyboard.js'], ({ MuseContr
 
     µ('[name="mode"]').forEach((radio)=> {
       radio.onchange = ()=> {
-        if (radio.value == 'pulse' && radio.checked) {
+        /*if (radio.value == 'pulse' ||  radio.value == ''&& radio.checked) {
           µ('#pulseDir').hidden = false;
         } else {
           µ('#pulseDir').hidden = true;
-        }
+        }*/
       };
     });
 
