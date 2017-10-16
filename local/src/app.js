@@ -14,11 +14,8 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
 
   pixels.init(88);
 
-  fileServer.get('/shutdown', ()=> {
-    pixels.setIndicator([127, 0, 0]);
-    setTimeout(()=> {
-      exec('sudo shutdown now');
-    }, 500);
+  fileServer.get('/shutdownOthers', ()=> {
+    wss.broadcast({ shutdown: true });
   });
 
   var openedFile = null;
@@ -213,6 +210,14 @@ obtain(obtains, (midi, { pixels, rainbow, Color }, { fileServer }, { wss }, fs, 
       pixels.setEachRGB((val, ind)=>dataSet[ind]);
       pixels.show();
     }
+  });
+
+  wss.addListener('shutdown', (dataSet, data)=> {
+    pixels.setIndicator([127, 0, 0]);
+    wss.broadcast({ shutdown: true });
+    setTimeout(()=> {
+      exec('sudo shutdown now');
+    }, 1000);
   });
 
   wss.addListener('listConfigs', (dataSet, data, client)=> {

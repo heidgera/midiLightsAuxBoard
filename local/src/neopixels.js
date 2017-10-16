@@ -4,7 +4,7 @@ var ws2812_nonRPi = { render: ()=> {}, init: ()=> {}, reset: ()=> {} };
 var os = require('os');
 
 var obtains = ['µ/color.js'];
-if (os.release() !== '4.10.0-35-generic') obtains[1] = 'rpi-ws281x-native';
+if (os.release() !== '4.10.0-35-generic' && os.platform() == 'linux') obtains[1] = 'rpi-ws281x-native';
 
 obtain(obtains, ({ rainbow, Color }, ws2812 = ws2812_nonRPi)=> {//'rpi-ws281x-native'
 
